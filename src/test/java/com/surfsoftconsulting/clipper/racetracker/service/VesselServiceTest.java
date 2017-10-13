@@ -16,7 +16,6 @@ package com.surfsoftconsulting.clipper.racetracker.service;
  * limitations under the License.
  */
 
-import com.sun.tools.javac.util.List;
 import com.surfsoftconsulting.clipper.racetracker.domain.*;
 import com.surfsoftconsulting.clipper.racetracker.rest.VesselResponse;
 import com.surfsoftconsulting.clipper.racetracker.rest.VesselResponseFactory;
@@ -26,6 +25,7 @@ import com.surfsoftconsulting.clipper.racetracker.web.SpeedAndCourseDataResolver
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 import static java.util.Arrays.asList;
