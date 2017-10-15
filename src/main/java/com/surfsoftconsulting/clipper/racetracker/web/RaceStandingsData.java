@@ -70,11 +70,15 @@ public class RaceStandingsData {
     }
 
     public Double getDistanceToLeadVessel() {
-        if (getPosition() == 1|| isInStealthMode()) {
+        if (isInStealthMode()) {
             return null;
         }
         else {
-            return parseNauticalMiles(tableRow.getElementsByTag("td").get(5).text().trim());
+            if (getPosition() == 1 || isInStealthMode()) {
+                return null;
+            } else {
+                return parseNauticalMiles(tableRow.getElementsByTag("td").get(5).text().trim());
+            }
         }
     }
 
@@ -89,11 +93,16 @@ public class RaceStandingsData {
 
     public LocalDateTime getTimestamp() {
         String timestampString = tableRow.getElementsByTag("td").get(7).text().trim();
-        if (StringUtils.isBlank(timestampString)) {
-            return null;
+        if (isInStealthMode()) {
+            String untilString = timestampString.substring(timestampString.toLowerCase().indexOf("until:") + 7);
+            return LocalDateTime.parse(untilString, TIMESTAMP_PARSER);
         }
         else {
-            return LocalDateTime.parse(timestampString.substring(0, timestampString.length() - 6), TIMESTAMP_PARSER);
+            if (StringUtils.isBlank(timestampString)) {
+                return null;
+            } else {
+                return LocalDateTime.parse(timestampString.substring(0, timestampString.length() - 6), TIMESTAMP_PARSER);
+            }
         }
     }
 
@@ -111,9 +120,8 @@ public class RaceStandingsData {
         }
     }
 
-    // TODO need to fix this as it definitely isn't right...
     public boolean isInStealthMode() {
-        return tableRow.getElementsByTag("td").get(9).text().trim().equals("stealth");
+        return tableRow.hasClass("stealthrow");
     }
 
     private Double parseNauticalMiles(String nauticalMiles) {

@@ -64,21 +64,21 @@ class RaceStandingsDataTest {
             "</tr></table></body></html>";
 
     private static final String STEALTH_MODE_HTML =
-            "<html><body><table><tr>" +
-            "    <td class=\"min20 marker\"><span class=\"posflag\"><span class=\"colour\" style=\"background-color: #ed1968\"></span><span class=\"num\"><span>4</span></span></span></td>" +
+            "<html><body><table><tr class=\"stealthrow\">" +
+            "    <td class=\"min20 marker\"><span class=\"posflag\"><span class=\"colour\" style=\"background-color: #ed1968\"></span><span class=\"num\"><span>-</span></span></span></td>" +
             "    <td>" +
             "        <a href=\"http://clipperroundtheworld.com/team/liverpool-2018\" class=\"cell-inner team-name\" rel=\"noreferrer\">" +
             "            Liverpool 2018" +
             "        </a>" +
             "    </td>" +
-            "    <td class=\"hide_tab hide_mob\"></td>" +
-            "    <td class=\"hide_tab  hide_mob\"></td>" +
-            "    <td></td>" +
+            "    <td class=\"hide_tab hide_mob\"><span class=\"nada\"></span></td>" +
+            "    <td class=\"hide_tab  hide_mob\"><span class=\"nada\"></span></td>" +
+            "    <td><span class=\"nada\"></span></td>" +
             "    <td class=\"hide_mob\"><span class=\"nada\"></span></td>" +
-            "    <td class=\"hide_mob\"></td>" +
-            "    <td class=\"hide_mob\">05 October 2017 12.05 (UTC)</td>" +
-            "    <td class=\"hide_port_mob\">racing</td>" +
-            "    <td class=\"hide_tab hide_mob\"><span class=\"nada\">stealth</span></td>" +
+            "    <td class=\"hide_mob\"><span class=\"nada\"></span></td>" +
+            "    <td class=\"hide_mob\">FROM: 15 October 2017 06.10 (UTC)<br>UNTIL: 16 October 2017 05.59</td>" +
+            "    <td class=\"hide_port_mob\">Stealth</td>" +
+            "    <td class=\"hide_tab hide_mob\"><span class=\"nada\"></span></td>" +
             "</tr></table></body></html>";
 
     private final RaceStandingsData firstPlace = new RaceStandingsData(Jsoup.parse(FIRST_PLACE_HTML).body().getElementsByTag("tr").first());
@@ -153,6 +153,11 @@ class RaceStandingsDataTest {
     @Test
     void getTimestamp() {
         assertThat(fourthPlace.getTimestamp(), is(LocalDateTime.of(2017, 10, 5, 12, 5, 0)));
+    }
+
+    @Test
+    void getTimestampInStealthMode() {
+        assertThat(stealthMode.getTimestamp(), is(LocalDateTime.of(2017, 10, 16, 5, 59, 0)));
     }
 
     @Test
