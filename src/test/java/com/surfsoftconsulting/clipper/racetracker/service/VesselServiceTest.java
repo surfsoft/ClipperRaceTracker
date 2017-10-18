@@ -133,6 +133,7 @@ class VesselServiceTest {
 
         RaceStandingsData raceStandingsData = mock(RaceStandingsData.class);
         when(raceStandingsData.getName()).thenReturn(VESSEL_NAME);
+        when(raceStandingsData.getTimestamp()).thenReturn(NEXT_UPDATE_TIMESTAMP);
         Vessel vessel = mock(Vessel.class);
         when(vessel.getId()).thenReturn(VESSEL_ID);
         when(vessel.getName()).thenReturn(VESSEL_NAME);
@@ -218,6 +219,27 @@ class VesselServiceTest {
 
         verify(positions, never()).add(newPosition);
         verify(vesselRepository, never()).save(any(Vessel.class));
+
+    }
+
+    @Test
+    void updateWhenFinished() {
+
+        RaceStandingsData raceStandingsData = mock(RaceStandingsData.class);
+        when(raceStandingsData.getName()).thenReturn(VESSEL_NAME);
+        when(raceStandingsData.getFinishTime()).thenReturn(NEXT_UPDATE_TIMESTAMP);
+        Vessel vessel = mock(Vessel.class);
+        when(vessel.getId()).thenReturn(VESSEL_ID);
+        when(vessel.getName()).thenReturn(VESSEL_NAME);
+        when(vesselRepository.findByName(VESSEL_NAME)).thenReturn(vessel);
+        Race race = mock(Race.class);
+        when(vessel.getRace(RACE_NO)).thenReturn(Optional.of(race));
+        List<SpeedAndCourseData> speedsAndCourses = mock(List.class);
+
+        underTest.updatePosition(RACE_NO, raceStandingsData, speedsAndCourses);
+
+        verify(race).setFinishTime(NEXT_UPDATE_TIMESTAMP);
+        verify(vesselRepository).save(vessel);
 
     }
 

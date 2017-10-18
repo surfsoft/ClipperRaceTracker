@@ -92,14 +92,19 @@ public class VesselService {
                 update = true;
             }
             if (race.get().getFinishTime() == null) {
-                Position latestPosition = race.get().getLatestPosition();
-                if (latestPosition.getTimestamp() == null || latestPosition.getTimestamp().isBefore(raceStandingsData.getTimestamp())) { // A new update is available; save it
-                    SpeedAndCourseData speedAndCourseData = speedAndCourseDataResolver.resolve(vessel.getName(), speedsAndCourses);
-                    race.get().getPositions().add(positionFactory.fromRaceStandingsData(vessel.getId(), raceStandingsData, speedAndCourseData));
+                if (raceStandingsData.getTimestamp() == null) {
                     race.get().setFinishTime(raceStandingsData.getFinishTime());
                     update = true;
-                } else {
-                    LOGGER.debug("Vessel '{}' has no new data available", raceStandingsData.getName());
+                }
+                else {
+                    Position latestPosition = race.get().getLatestPosition();
+                    if (latestPosition.getTimestamp() == null || latestPosition.getTimestamp().isBefore(raceStandingsData.getTimestamp())) { // A new update is available; save it
+                        SpeedAndCourseData speedAndCourseData = speedAndCourseDataResolver.resolve(vessel.getName(), speedsAndCourses);
+                        race.get().getPositions().add(positionFactory.fromRaceStandingsData(vessel.getId(), raceStandingsData, speedAndCourseData));
+                        update = true;
+                    } else {
+                        LOGGER.debug("Vessel '{}' has no new data available", raceStandingsData.getName());
+                    }
                 }
             }
             else {
