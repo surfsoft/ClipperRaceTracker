@@ -32,7 +32,7 @@ public class PositionFactory {
         this.positionService = positionService;
     }
 
-    public Position fromRaceStandingsRow(String id, RaceStandingsData row, SpeedAndCourseData speedAndCourseData) {
+    public Position fromRaceStandingsData(String id, RaceStandingsData row, SpeedAndCourseData speedAndCourseData) {
 
         boolean inStealthMode = row.isInStealthMode();
         LocalDateTime timestamp = row.getTimestamp();

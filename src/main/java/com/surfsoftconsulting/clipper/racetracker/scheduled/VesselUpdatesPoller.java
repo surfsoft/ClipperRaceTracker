@@ -17,10 +17,7 @@ package com.surfsoftconsulting.clipper.racetracker.scheduled;
  */
 
 import com.surfsoftconsulting.clipper.racetracker.service.VesselService;
-import com.surfsoftconsulting.clipper.racetracker.web.RaceStandingsDataParser;
-import com.surfsoftconsulting.clipper.racetracker.web.RaceStandingsDocumentFactory;
-import com.surfsoftconsulting.clipper.racetracker.web.SpeedAndCourseData;
-import com.surfsoftconsulting.clipper.racetracker.web.SpeedAndCourseDataParser;
+import com.surfsoftconsulting.clipper.racetracker.web.*;
 import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,16 +36,18 @@ public class VesselUpdatesPoller {
     private final RaceStandingsDocumentFactory raceStandingsDocumentFactory;
     private final RaceStandingsDataParser raceStandingsDataParser;
     private final SpeedAndCourseDataParser speedAndCourseDataParser;
+    private final RaceNumberParser raceNumberParser;
     private final VesselService vesselService;
 
     public VesselUpdatesPoller(RaceStandingsDocumentFactory raceStandingsDocumentFactory,
                                RaceStandingsDataParser raceStandingsDataParser,
                                SpeedAndCourseDataParser speedAndCourseDataParser,
-                               VesselService vesselService) {
+                               RaceNumberParser raceNumberParser, VesselService vesselService) {
 
         this.raceStandingsDocumentFactory = raceStandingsDocumentFactory;
         this.raceStandingsDataParser = raceStandingsDataParser;
         this.speedAndCourseDataParser = speedAndCourseDataParser;
+        this.raceNumberParser = raceNumberParser;
         this.vesselService = vesselService;
 
     }
@@ -61,7 +60,8 @@ public class VesselUpdatesPoller {
         Document standingsPage = raceStandingsDocumentFactory.fromUrl(RACE_STANDINGS_PAGE);
         if (standingsPage != null) {
             List<SpeedAndCourseData> speedsAndCourses = speedAndCourseDataParser.parse(standingsPage);
-            raceStandingsDataParser.parse(standingsPage).forEach(raceStandingsData -> vesselService.updatePosition(raceStandingsData, speedsAndCourses));
+            int raceNo = raceNumberParser.parse(standingsPage);
+            raceStandingsDataParser.parse(standingsPage).forEach(raceStandingsData -> vesselService.updatePosition(raceNo, raceStandingsData, speedsAndCourses));
         }
 
     }

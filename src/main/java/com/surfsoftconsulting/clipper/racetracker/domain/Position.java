@@ -42,8 +42,6 @@ public class Position {
 
     private String status;
 
-    private LocalDateTime finishTime;
-
     private boolean inStealthMode;
 
     public Position() {
@@ -59,7 +57,6 @@ public class Position {
         this.distanceTravelled = distanceTravelled;
         this.timestamp = timestamp;
         this.status = status;
-        this.finishTime = finishTime;
         this.inStealthMode = inStealthMode;
     }
 
@@ -135,14 +132,6 @@ public class Position {
         this.status = status;
     }
 
-    public LocalDateTime getFinishTime() {
-        return finishTime;
-    }
-
-    public void setFinishTime(LocalDateTime finishTime) {
-        this.finishTime = finishTime;
-    }
-
     public boolean isInStealthMode() {
         return inStealthMode;
     }
@@ -170,7 +159,6 @@ public class Position {
                 .append(distanceTravelled, position1.distanceTravelled)
                 .append(timestamp, position1.timestamp)
                 .append(status, position1.status)
-                .append(finishTime, position1.finishTime)
                 .isEquals();
     }
 
@@ -186,7 +174,6 @@ public class Position {
                 .append(distanceTravelled)
                 .append(timestamp)
                 .append(status)
-                .append(finishTime)
                 .append(inStealthMode)
                 .toHashCode();
     }
@@ -203,7 +190,6 @@ public class Position {
                 .append("distanceTravelled", distanceTravelled)
                 .append("timestamp", timestamp)
                 .append("status", status)
-                .append("finishTime", finishTime)
                 .append("inStealthMode", inStealthMode)
                 .toString();
     }

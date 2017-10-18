@@ -1,11 +1,5 @@
 package com.surfsoftconsulting.clipper.racetracker.domain;
 
-import org.junit.jupiter.api.Test;
-
-import static java.util.Collections.emptySet;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-
 /*
  * Copyright 2017 Phil Haigh
  *
@@ -22,21 +16,13 @@ import static org.hamcrest.Matchers.is;
  * limitations under the License.
  */
 
-class VesselFactoryTest {
+import org.springframework.stereotype.Component;
 
-    private static final String VESSEL_ID = "bmb";
-    private static final String VESSEL_NAME = "Boaty McBoatface";
-    private final VesselFactory underTest = new VesselFactory();
+@Component
+public class RaceFactory {
 
-    @Test
-    void newVessel() {
-
-        Vessel vessel = underTest.newVessel(VESSEL_ID, VESSEL_NAME);
-
-        assertThat(vessel.getId(), is(VESSEL_ID));
-        assertThat(vessel.getName(), is(VESSEL_NAME));
-        assertThat(vessel.getRaces(), is(emptySet()));
-
+    public Race newRace(int raceNo) {
+        return new Race(raceNo);
     }
 
 }

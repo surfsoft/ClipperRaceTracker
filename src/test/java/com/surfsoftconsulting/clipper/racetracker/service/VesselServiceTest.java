@@ -26,28 +26,35 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class VesselServiceTest {
 
+    private static final int RACE_NO = 1;
     private static final String VESSEL_NAME = "Boaty McBoatface";
     private static final String VESSEL_ID = "bmb";
-    private static final LocalDateTime CURRENT_POSITION_TIMESTAMP = LocalDateTime.of(2017, 8, 29, 14, 30, 0);
-    private static final LocalDateTime NEW_POSITION_TIMESTAMP = LocalDateTime.of(2017, 8, 29, 15, 30, 0);
+    private static final LocalDateTime LAST_UPDATE_TIMESTAMP = LocalDateTime.of(2017, 8, 29, 14, 30, 0);
+    private static final LocalDateTime NEXT_UPDATE_TIMESTAMP = LocalDateTime.of(2017, 8, 29, 15, 30, 0);
 
     private final VesselRepository vesselRepository = mock(VesselRepository.class);
     private final VesselFactory vesselFactory = mock(VesselFactory.class);
     private final VesselResponseFactory vesselResponseFactory = mock(VesselResponseFactory.class);
     private final PositionFactory positionFactory = mock(PositionFactory.class);
     private final SpeedAndCourseDataResolver speedAndCourseDataResolver = mock(SpeedAndCourseDataResolver.class);
+    private final RaceFactory raceFactory = mock(RaceFactory.class);
 
-    private final VesselService underTest = new VesselService(vesselRepository, vesselFactory, vesselResponseFactory, positionFactory, speedAndCourseDataResolver);
+    private final VesselService underTest = new VesselService(vesselRepository, vesselFactory, raceFactory, vesselResponseFactory, positionFactory, speedAndCourseDataResolver);
 
     @Test
     void nullId() {
@@ -112,83 +119,104 @@ class VesselServiceTest {
 
         RaceStandingsData raceStandingsData = mock(RaceStandingsData.class);
         when(raceStandingsData.getName()).thenReturn(VESSEL_NAME);
-        List<SpeedAndCourseData> speedAndCourseData = mock(List.class);
+        List<SpeedAndCourseData> speedsAndCourses = mock(List.class);
         when(vesselRepository.findByName(VESSEL_NAME)).thenReturn(null);
 
-        underTest.updatePosition(raceStandingsData, speedAndCourseData);
+        underTest.updatePosition(RACE_NO, raceStandingsData, speedsAndCourses);
 
         verify(vesselRepository, never()).save(any(Vessel.class));
 
     }
 
     @Test
-    void updatePositionWithFirstPosition() {
+    void updateWithFirstPosition() {
 
         RaceStandingsData raceStandingsData = mock(RaceStandingsData.class);
         when(raceStandingsData.getName()).thenReturn(VESSEL_NAME);
-        List<SpeedAndCourseData> speedAndCourseData = mock(List.class);
-        Set<Position> positions = mock(Set.class);
-        Position currentPosition = mock(Position.class);
-        when(currentPosition.getTimestamp()).thenReturn(null);
         Vessel vessel = mock(Vessel.class);
         when(vessel.getId()).thenReturn(VESSEL_ID);
         when(vessel.getName()).thenReturn(VESSEL_NAME);
-        when(vessel.getPositions()).thenReturn(positions);
-        when(vessel.getLatestPosition()).thenReturn(currentPosition);
+        Set<Race> races = mock(Set.class);
+        when(vessel.getRaces()).thenReturn(races);
         when(vesselRepository.findByName(VESSEL_NAME)).thenReturn(vessel);
-        when(speedAndCourseDataResolver.resolve(VESSEL_NAME, speedAndCourseData)).thenReturn(null);
-        Position newPosition = mock(Position.class);
-        when(positionFactory.fromRaceStandingsRow(VESSEL_ID, raceStandingsData, null)).thenReturn(newPosition);
-
-        underTest.updatePosition(raceStandingsData, speedAndCourseData);
-
-        verify(positions).add(newPosition);
-        verify(vesselRepository).save(vessel);
-
-    }
-
-    @Test
-    void updatePositionWithsubsequentPosition() {
-
-        RaceStandingsData raceStandingsData = mock(RaceStandingsData.class);
-        when(raceStandingsData.getName()).thenReturn(VESSEL_NAME);
-        when(raceStandingsData.getTimestamp()).thenReturn(NEW_POSITION_TIMESTAMP);
-        List<SpeedAndCourseData> speedAndCourseData = mock(List.class);
-        Set<Position> positions = mock(Set.class);
-        Position currentPosition = mock(Position.class);
-        when(currentPosition.getTimestamp()).thenReturn(CURRENT_POSITION_TIMESTAMP);
-        Vessel vessel = mock(Vessel.class);
-        when(vessel.getId()).thenReturn(VESSEL_ID);
-        when(vessel.getName()).thenReturn(VESSEL_NAME);
-        when(vessel.getPositions()).thenReturn(positions);
-        when(vessel.getLatestPosition()).thenReturn(currentPosition);
-        when(vesselRepository.findByName(VESSEL_NAME)).thenReturn(vessel);
-        when(speedAndCourseDataResolver.resolve(VESSEL_NAME, speedAndCourseData)).thenReturn(null);
-        Position newPosition = mock(Position.class);
-        when(positionFactory.fromRaceStandingsRow(VESSEL_ID, raceStandingsData, null)).thenReturn(newPosition);
-
-        underTest.updatePosition(raceStandingsData, speedAndCourseData);
-
-        verify(positions).add(newPosition);
-        verify(vesselRepository).save(vessel);
-
-    }
-
-    @Test
-    void updatePositionWhenPositionUnchanged() {
-
-        RaceStandingsData raceStandingsData = mock(RaceStandingsData.class);
-        when(raceStandingsData.getName()).thenReturn(VESSEL_NAME);
-        when(raceStandingsData.getTimestamp()).thenReturn(CURRENT_POSITION_TIMESTAMP);
-        List<SpeedAndCourseData> speedAndCourseData = mock(List.class);
+        Race race = mock(Race.class);
+        when(vessel.getRace(RACE_NO)).thenReturn(Optional.empty());
+        when(raceFactory.newRace(RACE_NO)).thenReturn(race);
         Position latestPosition = mock(Position.class);
-        when(latestPosition.getTimestamp()).thenReturn(CURRENT_POSITION_TIMESTAMP);
+        when(race.getLatestPosition()).thenReturn(latestPosition);
+        when(latestPosition.getTimestamp()).thenReturn(null);
+        List<SpeedAndCourseData> speedsAndCourses = mock(List.class);
+        SpeedAndCourseData speedAndCourseData = mock(SpeedAndCourseData.class);
+        when(speedAndCourseDataResolver.resolve(VESSEL_NAME, speedsAndCourses)).thenReturn(speedAndCourseData);
+        Position newPosition = mock(Position.class);
+        when(positionFactory.fromRaceStandingsData(VESSEL_ID, raceStandingsData, speedAndCourseData)).thenReturn(newPosition);
+        Set<Position> positions = mock(Set.class);
+        when(race.getPositions()).thenReturn(positions);
+
+        underTest.updatePosition(RACE_NO, raceStandingsData, speedsAndCourses);
+
+        verify(races).add(race);
+        verify(positions).add(newPosition);
+        verify(vesselRepository).save(any(Vessel.class));
+
+    }
+
+    @Test
+    void updateWithNewPosition() {
+
+        RaceStandingsData raceStandingsData = mock(RaceStandingsData.class);
+        when(raceStandingsData.getName()).thenReturn(VESSEL_NAME);
+        when(raceStandingsData.getTimestamp()).thenReturn(NEXT_UPDATE_TIMESTAMP);
         Vessel vessel = mock(Vessel.class);
+        when(vessel.getId()).thenReturn(VESSEL_ID);
+        when(vessel.getName()).thenReturn(VESSEL_NAME);
         when(vesselRepository.findByName(VESSEL_NAME)).thenReturn(vessel);
-        when(vessel.getLatestPosition()).thenReturn(latestPosition);
+        Race race = mock(Race.class);
+        when(vessel.getRace(RACE_NO)).thenReturn(Optional.of(race));
+        Position latestPosition = mock(Position.class);
+        when(race.getLatestPosition()).thenReturn(latestPosition);
+        when(latestPosition.getTimestamp()).thenReturn(LAST_UPDATE_TIMESTAMP);
+        List<SpeedAndCourseData> speedsAndCourses = mock(List.class);
+        SpeedAndCourseData speedAndCourseData = mock(SpeedAndCourseData.class);
+        when(speedAndCourseDataResolver.resolve(VESSEL_NAME, speedsAndCourses)).thenReturn(speedAndCourseData);
+        Position newPosition = mock(Position.class);
+        when(positionFactory.fromRaceStandingsData(VESSEL_ID, raceStandingsData, speedAndCourseData)).thenReturn(newPosition);
+        Set<Position> positions = mock(Set.class);
+        when(race.getPositions()).thenReturn(positions);
 
-        underTest.updatePosition(raceStandingsData, speedAndCourseData);
+        underTest.updatePosition(RACE_NO, raceStandingsData, speedsAndCourses);
 
+        verify(positions).add(newPosition);
+        verify(vesselRepository).save(any(Vessel.class));
+
+    }
+
+    @Test
+    void updateWithUnchangedPosition() {
+
+        RaceStandingsData raceStandingsData = mock(RaceStandingsData.class);
+        when(raceStandingsData.getName()).thenReturn(VESSEL_NAME);
+        when(raceStandingsData.getTimestamp()).thenReturn(LAST_UPDATE_TIMESTAMP);
+        Vessel vessel = mock(Vessel.class);
+        when(vessel.getId()).thenReturn(VESSEL_ID);
+        when(vessel.getName()).thenReturn(VESSEL_NAME);
+        when(vesselRepository.findByName(VESSEL_NAME)).thenReturn(vessel);
+        Race race = mock(Race.class);
+        when(vessel.getRace(RACE_NO)).thenReturn(Optional.of(race));
+        Position latestPosition = mock(Position.class);
+        when(race.getLatestPosition()).thenReturn(latestPosition);
+        when(latestPosition.getTimestamp()).thenReturn(LAST_UPDATE_TIMESTAMP);
+        List<SpeedAndCourseData> speedsAndCourses = mock(List.class);
+        SpeedAndCourseData speedAndCourseData = mock(SpeedAndCourseData.class);
+        when(speedAndCourseDataResolver.resolve(VESSEL_NAME, speedsAndCourses)).thenReturn(speedAndCourseData);
+        Position newPosition = mock(Position.class);
+        when(positionFactory.fromRaceStandingsData(VESSEL_ID, raceStandingsData, speedAndCourseData)).thenReturn(newPosition);
+        Set<Position> positions = mock(Set.class);
+        when(race.getPositions()).thenReturn(positions);
+
+        underTest.updatePosition(RACE_NO, raceStandingsData, speedsAndCourses);
+
+        verify(positions, never()).add(newPosition);
         verify(vesselRepository, never()).save(any(Vessel.class));
 
     }

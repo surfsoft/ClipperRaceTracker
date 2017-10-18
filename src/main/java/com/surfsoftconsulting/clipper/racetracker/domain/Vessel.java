@@ -22,6 +22,8 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.data.annotation.Id;
 
 import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import static java.util.Collections.emptySet;
@@ -33,12 +35,12 @@ public class Vessel {
 
     private String name;
 
-    private Set<Position> positions;
+    private Set<Race> races;
 
     public Vessel(String id, String name) {
         this.id = id;
         this.name = name;
-        positions = emptySet();
+        races = new HashSet<>();
     }
 
     public String getId() {
@@ -57,16 +59,24 @@ public class Vessel {
         this.name = name;
     }
 
-    public Set<Position> getPositions() {
-        return positions == null ? emptySet() : positions;
+    public Set<Race> getRaces() {
+        return races == null ? emptySet() : races;
     }
 
-    public void setPositions(Set<Position> positions) {
-        this.positions = positions;
+    public void setRaces(Set<Race> races) {
+        this.races = races;
     }
 
-    public Position getLatestPosition() {
-        return getPositions().stream().sorted(Comparator.comparing(Position::getTimestamp).reversed()).findFirst().orElse(new Position());
+    public Optional<Race> getRace(int raceNo) {
+        return getRaces()
+                .stream()
+                .filter(r -> r.getRaceNo() == raceNo)
+                .findFirst();
+
+    }
+
+    public Optional<Race> getLatestRace() {
+        return getRaces().stream().sorted(Comparator.comparing(Race::getRaceNo).reversed()).findFirst();
     }
 
     @Override
@@ -80,7 +90,7 @@ public class Vessel {
         return new EqualsBuilder()
                 .append(id, vessel.id)
                 .append(name, vessel.name)
-                .append(positions, vessel.positions)
+                .append(races, vessel.races)
                 .isEquals();
     }
 
@@ -89,7 +99,7 @@ public class Vessel {
         return new HashCodeBuilder(17, 37)
                 .append(id)
                 .append(name)
-                .append(positions)
+                .append(races)
                 .toHashCode();
     }
 
@@ -98,7 +108,7 @@ public class Vessel {
         return new ToStringBuilder(this)
                 .append("id", id)
                 .append("name", name)
-                .append("positions", positions)
+                .append("races", races)
                 .toString();
     }
 

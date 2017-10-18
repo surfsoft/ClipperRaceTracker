@@ -17,6 +17,7 @@ package com.surfsoftconsulting.clipper.racetracker.service;
  */
 
 import com.surfsoftconsulting.clipper.racetracker.domain.Position;
+import com.surfsoftconsulting.clipper.racetracker.domain.Race;
 import com.surfsoftconsulting.clipper.racetracker.domain.Vessel;
 import com.surfsoftconsulting.clipper.racetracker.domain.VesselRepository;
 import com.surfsoftconsulting.clipper.racetracker.rest.PositionResponse;
@@ -25,6 +26,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+
+import java.util.Optional;
 
 @Component
 public class PositionService {
@@ -46,7 +49,10 @@ public class PositionService {
         if (StringUtils.isNotBlank(id)) {
             Vessel vessel = vesselRepository.findById(id);
             if (vessel != null) {
-                position = vessel.getLatestPosition();
+                Optional<Race> race = vessel.getLatestRace();
+                if (race.isPresent()) {
+                    position = race.get().getLatestPosition();
+                }
             }
             else {
                 LOGGER.warn("Vessel with id '{}' not found", id);

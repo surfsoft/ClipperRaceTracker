@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -38,13 +39,15 @@ public class VesselService {
 
     private final VesselRepository vesselRepository;
     private final VesselFactory vesselFactory;
+    private final RaceFactory raceFactory;
     private final VesselResponseFactory vesselResponseFactory;
     private final PositionFactory positionFactory;
     private final SpeedAndCourseDataResolver speedAndCourseDataResolver;
 
-    public VesselService(VesselRepository vesselRepository, VesselFactory vesselFactory, VesselResponseFactory vesselResponseFactory, PositionFactory positionFactory, SpeedAndCourseDataResolver speedAndCourseDataResolver) {
+    public VesselService(VesselRepository vesselRepository, VesselFactory vesselFactory, RaceFactory raceFactory, VesselResponseFactory vesselResponseFactory, PositionFactory positionFactory, SpeedAndCourseDataResolver speedAndCourseDataResolver) {
         this.vesselRepository = vesselRepository;
         this.vesselFactory = vesselFactory;
+        this.raceFactory = raceFactory;
         this.vesselResponseFactory = vesselResponseFactory;
         this.positionFactory = positionFactory;
         this.speedAndCourseDataResolver = speedAndCourseDataResolver;
@@ -76,21 +79,39 @@ public class VesselService {
 
     }
 
-    public void updatePosition(RaceStandingsData raceStandingsData, List<SpeedAndCourseData> speedsAndCourses) {
+    public void updatePosition(int raceNo, RaceStandingsData raceStandingsData, List<SpeedAndCourseData> speedsAndCourses) {
 
         Vessel vessel = vesselRepository.findByName(raceStandingsData.getName());
+        boolean update = false;
         if (vessel != null) {
-            Position latestPosition = vessel.getLatestPosition();
-            if (latestPosition.getTimestamp() == null || latestPosition.getTimestamp().isBefore(raceStandingsData.getTimestamp())) { // A new update is available; save it
-                vessel.getPositions().add(positionFactory.fromRaceStandingsRow(vessel.getId(), raceStandingsData, speedAndCourseDataResolver.resolve(vessel.getName(), speedsAndCourses)));
-                vesselRepository.save(vessel);
+            Optional<Race> race = vessel.getRace(raceNo);
+            if (!race.isPresent()) {
+                Race newRace = raceFactory.newRace(raceNo);
+                race = Optional.of(newRace);
+                vessel.getRaces().add(newRace);
+                update = true;
+            }
+            if (race.get().getFinishTime() == null) {
+                Position latestPosition = race.get().getLatestPosition();
+                if (latestPosition.getTimestamp() == null || latestPosition.getTimestamp().isBefore(raceStandingsData.getTimestamp())) { // A new update is available; save it
+                    SpeedAndCourseData speedAndCourseData = speedAndCourseDataResolver.resolve(vessel.getName(), speedsAndCourses);
+                    race.get().getPositions().add(positionFactory.fromRaceStandingsData(vessel.getId(), raceStandingsData, speedAndCourseData));
+                    race.get().setFinishTime(raceStandingsData.getFinishTime());
+                    update = true;
+                } else {
+                    LOGGER.debug("Vessel '{}' has no new data available", raceStandingsData.getName());
+                }
             }
             else {
-                LOGGER.debug("Vessel '{}' has no new data available", raceStandingsData.getName());
+                LOGGER.debug("Vessel '{}' has completed this race", raceStandingsData.getName());
             }
         }
         else {
             LOGGER.warn("Vessel with name '{}' not found in database", raceStandingsData.getName());
+        }
+
+        if (update) {
+            vesselRepository.save(vessel);
         }
 
     }

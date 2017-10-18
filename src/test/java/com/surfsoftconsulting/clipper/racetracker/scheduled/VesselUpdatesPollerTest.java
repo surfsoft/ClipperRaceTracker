@@ -24,21 +24,29 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static java.util.Arrays.asList;
-import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class VesselUpdatesPollerTest {
+
+    private static final int RACE_NO = 1;
 
     private final RaceStandingsDocumentFactory raceStandingsDocumentFactory = mock(RaceStandingsDocumentFactory.class);
     private final RaceStandingsDataParser raceStandingsDataParser = mock(RaceStandingsDataParser.class);
     private final SpeedAndCourseDataParser speedAndCourseDataParser = mock(SpeedAndCourseDataParser.class);
     private final VesselService vesselService = mock(VesselService.class);
+    private final RaceNumberParser raceNumberParser = mock(RaceNumberParser.class);
 
-    private final VesselUpdatesPoller underTest = new VesselUpdatesPoller(raceStandingsDocumentFactory, raceStandingsDataParser, speedAndCourseDataParser, vesselService);
+    private final VesselUpdatesPoller underTest = new VesselUpdatesPoller(raceStandingsDocumentFactory, raceStandingsDataParser, speedAndCourseDataParser, raceNumberParser, vesselService);
 
     @Test
     void pollForUpdates() {
 
         Document raceStandingsDocument = mock(Document.class);
+        when(raceNumberParser.parse(raceStandingsDocument)).thenReturn(RACE_NO);
         when(raceStandingsDocumentFactory.fromUrl("http://clipperroundtheworld.com/race/standings")).thenReturn(raceStandingsDocument);
         List<SpeedAndCourseData> speedsAndCourses = mock(List.class);
         when(speedAndCourseDataParser.parse(raceStandingsDocument)).thenReturn(speedsAndCourses);
@@ -48,8 +56,8 @@ class VesselUpdatesPollerTest {
 
         underTest.pollForUpdates();
 
-        verify(vesselService).updatePosition(raceStandingsData1, speedsAndCourses);
-        verify(vesselService).updatePosition(raceStandingsData2, speedsAndCourses);
+        verify(vesselService).updatePosition(RACE_NO, raceStandingsData1, speedsAndCourses);
+        verify(vesselService).updatePosition(RACE_NO, raceStandingsData2, speedsAndCourses);
 
     }
 
@@ -60,7 +68,9 @@ class VesselUpdatesPollerTest {
 
         underTest.pollForUpdates();
 
-        verify(vesselService, never()).updatePosition(any(), any());
+        verify(speedAndCourseDataParser, never()).parse(any(Document.class));
+        verify(raceNumberParser, never()).parse(any(Document.class));
+        verify(raceStandingsDataParser, never()).parse(any(Document.class));
 
     }
 

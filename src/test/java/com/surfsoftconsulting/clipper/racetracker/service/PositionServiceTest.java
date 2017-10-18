@@ -17,11 +17,14 @@ package com.surfsoftconsulting.clipper.racetracker.service;
  */
 
 import com.surfsoftconsulting.clipper.racetracker.domain.Position;
+import com.surfsoftconsulting.clipper.racetracker.domain.Race;
 import com.surfsoftconsulting.clipper.racetracker.domain.Vessel;
 import com.surfsoftconsulting.clipper.racetracker.domain.VesselRepository;
 import com.surfsoftconsulting.clipper.racetracker.rest.PositionResponse;
 import com.surfsoftconsulting.clipper.racetracker.rest.PositionResponseFactory;
 import org.junit.jupiter.api.Test;
+
+import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -32,8 +35,11 @@ import static org.mockito.Mockito.when;
 
 class PositionServiceTest {
 
+    private static final String VESSEL_ID = "cv21";
+
     private final VesselRepository vesselRepository = mock(VesselRepository.class);
-    private PositionResponseFactory positionResponseFactory = mock(PositionResponseFactory.class);
+    private final Race race = mock(Race.class);
+    private final PositionResponseFactory positionResponseFactory = mock(PositionResponseFactory.class);
 
     private final PositionService underTest = new PositionService(vesselRepository, positionResponseFactory);
 
@@ -52,34 +58,34 @@ class PositionServiceTest {
     @Test
     void invalidId() {
 
-        when(positionResponseFactory.toPositionResponse(eq("asd"), any(Position.class))).thenReturn(positionResponse);
+        when(positionResponseFactory.toPositionResponse(eq(VESSEL_ID), any(Position.class))).thenReturn(positionResponse);
 
-        assertThat(underTest.getPosition("asd"), is(positionResponse));
+        assertThat(underTest.getPosition(VESSEL_ID), is(positionResponse));
+
+    }
+
+    @Test
+    void validIdWithNoRace() {
+
+        when(vesselRepository.findById(VESSEL_ID)).thenReturn(vessel);
+        when(vessel.getLatestRace()).thenReturn(Optional.empty());
+        when(positionResponseFactory.toPositionResponse(eq(VESSEL_ID), any(Position.class))).thenReturn(positionResponse);
+
+        assertThat(underTest.getPosition(VESSEL_ID), is(positionResponse));
 
     }
 
     @Test
     void validIdWithNoPosition() {
 
-        when(vesselRepository.findById("cv21")).thenReturn(vessel);
-        when(positionResponseFactory.toPositionResponse(eq("cv21"), any(Position.class))).thenReturn(positionResponse);
-
-        assertThat(underTest.getPosition("cv21"), is(positionResponse));
-
-    }
-
-    @Test
-    void validIdWithPosition() {
-
-        when(vesselRepository.findById("cv21")).thenReturn(vessel);
+        when(vesselRepository.findById(VESSEL_ID)).thenReturn(vessel);
+        when(vessel.getLatestRace()).thenReturn(Optional.of(race));
         Position position = mock(Position.class);
-        when(vessel.getLatestPosition()).thenReturn(position);
-        when(positionResponseFactory.toPositionResponse("cv21", position)).thenReturn(positionResponse);
+        when(race.getLatestPosition()).thenReturn(position);
+        when(positionResponseFactory.toPositionResponse(VESSEL_ID, position)).thenReturn(positionResponse);
 
-        assertThat(underTest.getPosition("cv21"), is(positionResponse));
+        assertThat(underTest.getPosition(VESSEL_ID), is(positionResponse));
 
     }
-
-
 
 }

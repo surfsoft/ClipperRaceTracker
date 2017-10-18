@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import static java.util.Collections.emptySet;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 
 /*
  * Copyright 2017 Phil Haigh
@@ -21,21 +22,19 @@ import static org.hamcrest.Matchers.is;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+class RaceFactoryTest {
 
-class VesselFactoryTest {
-
-    private static final String VESSEL_ID = "bmb";
-    private static final String VESSEL_NAME = "Boaty McBoatface";
-    private final VesselFactory underTest = new VesselFactory();
+    private final RaceFactory underTest = new RaceFactory();
 
     @Test
-    void newVessel() {
+    void newRace() {
 
-        Vessel vessel = underTest.newVessel(VESSEL_ID, VESSEL_NAME);
+        Race race = underTest.newRace(1);
 
-        assertThat(vessel.getId(), is(VESSEL_ID));
-        assertThat(vessel.getName(), is(VESSEL_NAME));
-        assertThat(vessel.getRaces(), is(emptySet()));
+        assertThat(race.getRaceNo(), is(1));
+        assertThat(race.getPositions(), is(emptySet()));
+        assertThat(race.getLatestPosition(), is(new Position()));
+        assertThat(race.getFinishTime(), is(nullValue()));
 
     }
 
