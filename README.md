@@ -37,20 +37,7 @@ This can be achieved via the `/vessel` endpoint, for example by using curl:
 > `curl -X POST -H "Content-Type: application/x-www-form-urlencoded" -d "id=cv26&name=Visit%20Seattle" localhost:8080/vessel`
 
 The name supplied **must** match the name as written into the current race standings table (the web page shows all team names in uppercase but the team names are actually mixed case).
-Here's teh set of `curl` commands I used:
-
-> `curl -X POST -H "Content-Type: application/x-www-form-urlencoded" -d "id=cv26&name=Visit%20Seattle" localhost:8080/vessel`  
-> `curl -X POST -H "Content-Type: application/x-www-form-urlencoded" -d "id=cv20&name=Liverpool%202018" localhost:8080/vessel`  
-> `curl -X POST -H "Content-Type: application/x-www-form-urlencoded" -d "id=cv21&name=UNICEF" localhost:8080/vessel`  
-> `curl -X POST -H "Content-Type: application/x-www-form-urlencoded" -d "id=cv22&name=Garmin" localhost:8080/vessel`  
-> `curl -X POST -H "Content-Type: application/x-www-form-urlencoded" -d "id=cv23&name=HotelPlanner.com" localhost:8080/vessel`  
-> `curl -X POST -H "Content-Type: application/x-www-form-urlencoded" -d "id=cv24&name=Greenings" localhost:8080/vessel`  
-> `curl -X POST -H "Content-Type: application/x-www-form-urlencoded" -d "id=cv25&name=Dare%20To%20Lead" localhost:8080/vessel`  
-> `curl -X POST -H "Content-Type: application/x-www-form-urlencoded" -d "id=cv27&name=Sanya%20Serenity%20Coast" localhost:8080/vessel`  
-> `curl -X POST -H "Content-Type: application/x-www-form-urlencoded" -d "id=cv28&name=PSP%20Logistics" localhost:8080/vessel`  
-> `curl -X POST -H "Content-Type: application/x-www-form-urlencoded" -d "id=cv29&name=Qingdao" localhost:8080/vessel`  
-> `curl -X POST -H "Content-Type: application/x-www-form-urlencoded" -d "id=cv30&name=Great%20Britain" localhost:8080/vessel`  
-> `curl -X POST -H "Content-Type: application/x-www-form-urlencoded" -d "id=cv31&name=NASDAQ" localhost:8080/vessel`  
+The bash script seed-vessels.sh will seed the correct values for the 2017 race.  
 
 ## What it does
 
@@ -63,3 +50,24 @@ The refresh interval is configurable in `application.properties` and is currentl
   
 For each vessel the service will store the supplied position details, but only if the timestamp is later than the most recent position for that vessel.
 This caters for the situation where the position update for one or more vessels arrives late.  
+
+# Clipper Race Tracker Client
+
+This is an ESP8266 connected to an AdaFruit NeoPixel 8x8 matrix. 
+It uses the service above to display the current race position of your selected boat.
+
+I can, on request, supply a kit comprising a pre-flashed ESP8266 together with a NeoPixel 8x8 matrix and connecting wires.
+You'll need to assemble these items, (instructions provided) connect a USB 3 power supply (not provided).
+Optionally you can add a case and/or a LiPo battery for mains-free use (the USB charger charges the LiPo when both are plugged in).
+
+Once it is all powered up all you have to do is configure it: 
+- Connect it to your local WiFi
+- Choose your boat on the configuration page
+
+And that's it. The display updates regularly from the web and its configuration is preserved when turned off.
+
+## Flashing your own ESP8266
+
+This is coming soon.
+I am about to open source an ESP8266 library which encapsulates and simplifies the core functions of the ESP8266.
+The library allows you to concentrate on developing your IoT functionality rather than worrying about core connectivity and configuration.
