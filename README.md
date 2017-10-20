@@ -12,6 +12,8 @@ The application exposes the following endpoints:
 - /fleet/list (GET) - returns a JSON list of vessels, each with an id and name 
 - /position/${id} (GET) - returns the current position of the specified vessel
 
+Coming soon: A new URL that will allow you to download all the tracking data for a given race as a CSV file.
+
 ## Use of this service
 
 You will need Java 8 and MongoDB 3 installed. Build the code using gradlew (Unix/Linux/OS X) or gradlew.bat (Windows)
