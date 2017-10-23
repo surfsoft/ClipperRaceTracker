@@ -17,6 +17,7 @@ package com.surfsoftconsulting.clipper.racetracker.service;
  */
 
 import com.surfsoftconsulting.clipper.racetracker.domain.*;
+import com.surfsoftconsulting.clipper.racetracker.rest.ExportedPositionResponseFactory;
 import com.surfsoftconsulting.clipper.racetracker.rest.VesselResponse;
 import com.surfsoftconsulting.clipper.racetracker.rest.VesselResponseFactory;
 import com.surfsoftconsulting.clipper.racetracker.web.RaceStandingsData;
@@ -25,11 +26,14 @@ import com.surfsoftconsulting.clipper.racetracker.web.SpeedAndCourseDataResolver
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+import static java.util.Optional.empty;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -53,8 +57,9 @@ class VesselServiceTest {
     private final PositionFactory positionFactory = mock(PositionFactory.class);
     private final SpeedAndCourseDataResolver speedAndCourseDataResolver = mock(SpeedAndCourseDataResolver.class);
     private final RaceFactory raceFactory = mock(RaceFactory.class);
+    private final ExportedPositionResponseFactory exportedPositionResponseFactory = mock(ExportedPositionResponseFactory.class);
 
-    private final VesselService underTest = new VesselService(vesselRepository, vesselFactory, raceFactory, vesselResponseFactory, positionFactory, speedAndCourseDataResolver);
+    private final VesselService underTest = new VesselService(vesselRepository, vesselFactory, raceFactory, vesselResponseFactory, positionFactory, speedAndCourseDataResolver, exportedPositionResponseFactory);
 
     @Test
     void nullId() {
@@ -141,7 +146,7 @@ class VesselServiceTest {
         when(vessel.getRaces()).thenReturn(races);
         when(vesselRepository.findByName(VESSEL_NAME)).thenReturn(vessel);
         Race race = mock(Race.class);
-        when(vessel.getRace(RACE_NO)).thenReturn(Optional.empty());
+        when(vessel.getRace(RACE_NO)).thenReturn(empty());
         when(raceFactory.newRace(RACE_NO)).thenReturn(race);
         Position latestPosition = mock(Position.class);
         when(race.getLatestPosition()).thenReturn(latestPosition);
@@ -240,6 +245,55 @@ class VesselServiceTest {
 
         verify(race).setFinishTime(NEXT_UPDATE_TIMESTAMP);
         verify(vesselRepository).save(vessel);
+
+    }
+
+    @Test
+    void exportInvalidVesselId() {
+
+        when(vesselRepository.findById(VESSEL_ID)).thenReturn(null);
+
+        assertThat(underTest.export(VESSEL_ID, 1), is(emptyList()));
+
+    }
+
+    @Test
+    void exportInvalidRaceNo() {
+
+        Vessel vessel = mock(Vessel.class);
+        when(vesselRepository.findById(VESSEL_ID)).thenReturn(vessel);
+        when(vessel.getRace(RACE_NO)).thenReturn(empty());
+
+        assertThat(underTest.export(VESSEL_ID, RACE_NO), is(emptyList()));
+
+    }
+
+    @Test
+    void export() {
+
+        Vessel vessel = mock(Vessel.class);
+        when(vesselRepository.findById(VESSEL_ID)).thenReturn(vessel);
+        Race race = mock(Race.class);
+        when(vessel.getRace(RACE_NO)).thenReturn(Optional.of(race));
+        HashSet<Position> positions = new HashSet<>();
+        Position position1 = mockPosition(LocalDateTime.of(2017, 10, 20, 2, 2, 3));
+        Position position2 = mockPosition(LocalDateTime.of(2017, 10, 20, 1, 2, 3));
+        positions.add(position1);
+        positions.add(position2);
+        when(race.getPositions()).thenReturn(positions);
+        List exportedPositions = mock(List.class);
+        when(exportedPositionResponseFactory.toExportedPositionResponse(asList(position2, position1))).thenReturn(exportedPositions);
+
+        assertThat(underTest.export(VESSEL_ID, RACE_NO), is(exportedPositions));
+
+    }
+
+    private Position mockPosition(LocalDateTime timestamp) {
+
+        Position position = mock(Position.class);
+        when(position.getTimestamp()).thenReturn(timestamp);
+
+        return position;
 
     }
 

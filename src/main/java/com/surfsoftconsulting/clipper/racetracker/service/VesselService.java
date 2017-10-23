@@ -17,6 +17,8 @@ package com.surfsoftconsulting.clipper.racetracker.service;
  */
 
 import com.surfsoftconsulting.clipper.racetracker.domain.*;
+import com.surfsoftconsulting.clipper.racetracker.rest.ExportedPositionResponse;
+import com.surfsoftconsulting.clipper.racetracker.rest.ExportedPositionResponseFactory;
 import com.surfsoftconsulting.clipper.racetracker.rest.VesselResponse;
 import com.surfsoftconsulting.clipper.racetracker.rest.VesselResponseFactory;
 import com.surfsoftconsulting.clipper.racetracker.web.RaceStandingsData;
@@ -27,9 +29,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @Component
 public class VesselService {
@@ -43,18 +48,20 @@ public class VesselService {
     private final VesselResponseFactory vesselResponseFactory;
     private final PositionFactory positionFactory;
     private final SpeedAndCourseDataResolver speedAndCourseDataResolver;
+    private final ExportedPositionResponseFactory exportedPositionResponseFactory;
 
-    public VesselService(VesselRepository vesselRepository, VesselFactory vesselFactory, RaceFactory raceFactory, VesselResponseFactory vesselResponseFactory, PositionFactory positionFactory, SpeedAndCourseDataResolver speedAndCourseDataResolver) {
+    public VesselService(VesselRepository vesselRepository, VesselFactory vesselFactory, RaceFactory raceFactory, VesselResponseFactory vesselResponseFactory, PositionFactory positionFactory, SpeedAndCourseDataResolver speedAndCourseDataResolver, ExportedPositionResponseFactory exportedPositionResponseFactory) {
         this.vesselRepository = vesselRepository;
         this.vesselFactory = vesselFactory;
         this.raceFactory = raceFactory;
         this.vesselResponseFactory = vesselResponseFactory;
         this.positionFactory = positionFactory;
         this.speedAndCourseDataResolver = speedAndCourseDataResolver;
+        this.exportedPositionResponseFactory = exportedPositionResponseFactory;
     }
 
     public List<VesselResponse> getVessels() {
-        return vesselRepository.findAll().stream().map(vesselResponseFactory::toVesselResponse).collect(Collectors.toList());
+        return vesselRepository.findAll().stream().map(vesselResponseFactory::toVesselResponse).collect(toList());
     }
 
     public String create(String id, String name) {
@@ -117,6 +124,18 @@ public class VesselService {
 
         if (update) {
             vesselRepository.save(vessel);
+        }
+
+    }
+
+    public List<ExportedPositionResponse> export(String id, int raceNo) {
+
+        Vessel vessel = vesselRepository.findById(id);
+        if (vessel != null && vessel.getRace(raceNo).isPresent()) {
+            return exportedPositionResponseFactory.toExportedPositionResponse(vessel.getRace(raceNo).get().getPositions().stream().sorted(Comparator.comparing(Position::getTimestamp)).collect(toList()));
+        }
+        else {
+            return Collections.emptyList();
         }
 
     }
