@@ -39,8 +39,8 @@ import static java.util.stream.Collectors.toList;
 @Component
 public class VesselService {
 
-    public static final String ID_OR_NAME_IS_BLANK = "id or name is blank";
-    private final Logger LOGGER = LoggerFactory.getLogger(VesselService.class);
+    private static final String ID_OR_NAME_IS_BLANK = "id or name is blank";
+    private static final Logger LOGGER = LoggerFactory.getLogger(VesselService.class);
 
     private final VesselRepository vesselRepository;
     private final VesselFactory vesselFactory;
