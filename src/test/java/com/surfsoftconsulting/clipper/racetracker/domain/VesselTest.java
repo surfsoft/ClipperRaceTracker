@@ -16,7 +16,6 @@ package com.surfsoftconsulting.clipper.racetracker.domain;
  * limitations under the License.
  */
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
@@ -28,22 +27,17 @@ class VesselTest {
 
     private static final String VESSEL_ID = "bmb";
     private static final String VESSEL_NAME = "Boaty McBoatface";
+
+    private final Vessel underTest = new Vessel(VESSEL_ID, VESSEL_NAME);
+
+    private final Race race1 = new Race(1);
     private final Race race2 = new Race(2);
-
-    Vessel underTest = new Vessel(VESSEL_ID, VESSEL_NAME);
-
-    private Race race1 = new Race(1);
-
-    @BeforeEach
-    void setUp() {
-
-        underTest.getRaces().add(race1);
-        underTest.getRaces().add(race2);
-
-    }
 
     @Test
     void getRace() {
+
+        underTest.getRaces().add(race1);
+        underTest.getRaces().add(race2);
 
         Optional<Race> race = underTest.getRace(1);
 
@@ -54,12 +48,19 @@ class VesselTest {
 
     @Test
     void getMissingRace() {
+
+        underTest.getRaces().add(race1);
+        underTest.getRaces().add(race2);
+
         assertThat(underTest.getRace(3).isPresent(), is(false));
 
     }
 
     @Test
     void getLatestRace() {
+
+        underTest.getRaces().add(race1);
+        underTest.getRaces().add(race2);
 
         Optional<Race> race = underTest.getLatestRace();
 
@@ -68,5 +69,15 @@ class VesselTest {
 
     }
 
+    @Test
+    void test() {
+
+        assertThat(underTest.hasNotStarted(), is(true));
+
+        underTest.getRaces().add(race1);
+
+        assertThat(underTest.hasNotStarted(), is(false));
+
+    }
 
 }

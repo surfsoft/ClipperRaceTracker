@@ -16,26 +16,27 @@ package com.surfsoftconsulting.clipper.racetracker.controller;
  * limitations under the License.
  */
 
-import com.surfsoftconsulting.clipper.racetracker.rest.PositionResponse;
-import com.surfsoftconsulting.clipper.racetracker.service.PositionService;
-import org.springframework.web.bind.annotation.PathVariable;
+import com.surfsoftconsulting.clipper.racetracker.service.SlackService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import javax.servlet.http.HttpServletRequest;
+
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
-public class PositionController {
+@RequestMapping(path="/slack")
+public class SlackController {
 
-    private final PositionService positionService;
+    private final SlackService slackService;
 
-    public PositionController(PositionService positionService) {
-        this.positionService = positionService;
+    public SlackController(SlackService slackService) {
+        this.slackService = slackService;
     }
 
-    @RequestMapping(method=GET, path="/position/{id}")
-    public PositionResponse getPosition(@PathVariable("id") String id) {
-        return positionService.getPosition(id);
+    @RequestMapping(method=POST, path="/position")
+    public String getSlackPosition(HttpServletRequest request) {
+        return slackService.getPosition(request.getParameter("text"));
     }
 
 }

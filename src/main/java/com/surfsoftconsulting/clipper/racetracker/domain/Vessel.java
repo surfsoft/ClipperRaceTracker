@@ -79,6 +79,10 @@ public class Vessel {
         return getRaces().stream().sorted(Comparator.comparing(Race::getRaceNo).reversed()).findFirst();
     }
 
+    public boolean hasNotStarted() {
+        return races.isEmpty();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
