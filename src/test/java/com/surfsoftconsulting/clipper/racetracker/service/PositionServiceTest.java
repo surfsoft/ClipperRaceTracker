@@ -36,6 +36,7 @@ import static org.mockito.Mockito.when;
 class PositionServiceTest {
 
     private static final String VESSEL_ID = "cv21";
+    private static final String VESSEL_NAME = "Unicef";
 
     private final VesselRepository vesselRepository = mock(VesselRepository.class);
     private final Race race = mock(Race.class);
@@ -49,7 +50,7 @@ class PositionServiceTest {
     @Test
     void nullId() {
 
-        when(positionResponseFactory.toPositionResponse(eq(null), any(Position.class))).thenReturn(positionResponse);
+        when(positionResponseFactory.toPositionResponse(eq(null), eq(null), any(Position.class))).thenReturn(positionResponse);
 
         assertThat(underTest.getPosition(null), is(positionResponse));
 
@@ -58,7 +59,7 @@ class PositionServiceTest {
     @Test
     void invalidId() {
 
-        when(positionResponseFactory.toPositionResponse(eq(VESSEL_ID), any(Position.class))).thenReturn(positionResponse);
+        when(positionResponseFactory.toPositionResponse(eq(VESSEL_ID), eq(null), any(Position.class))).thenReturn(positionResponse);
 
         assertThat(underTest.getPosition(VESSEL_ID), is(positionResponse));
 
@@ -68,8 +69,9 @@ class PositionServiceTest {
     void validIdWithNoRace() {
 
         when(vesselRepository.findById(VESSEL_ID)).thenReturn(vessel);
+        when(vessel.getName()).thenReturn(VESSEL_NAME);
         when(vessel.getLatestRace()).thenReturn(Optional.empty());
-        when(positionResponseFactory.toPositionResponse(eq(VESSEL_ID), any(Position.class))).thenReturn(positionResponse);
+        when(positionResponseFactory.toPositionResponse(eq(VESSEL_ID), eq(VESSEL_NAME), any(Position.class))).thenReturn(positionResponse);
 
         assertThat(underTest.getPosition(VESSEL_ID), is(positionResponse));
 
@@ -79,10 +81,11 @@ class PositionServiceTest {
     void validIdWithNoPosition() {
 
         when(vesselRepository.findById(VESSEL_ID)).thenReturn(vessel);
+        when(vessel.getName()).thenReturn(VESSEL_NAME);
         when(vessel.getLatestRace()).thenReturn(Optional.of(race));
         Position position = mock(Position.class);
         when(race.getLatestPosition()).thenReturn(position);
-        when(positionResponseFactory.toPositionResponse(VESSEL_ID, position)).thenReturn(positionResponse);
+        when(positionResponseFactory.toPositionResponse(VESSEL_ID, VESSEL_NAME, position)).thenReturn(positionResponse);
 
         assertThat(underTest.getPosition(VESSEL_ID), is(positionResponse));
 

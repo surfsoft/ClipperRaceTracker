@@ -22,7 +22,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
 public class PositionController {
@@ -36,6 +39,20 @@ public class PositionController {
     @RequestMapping(method=GET, path="/position/{id}")
     public PositionResponse getPosition(@PathVariable("id") String id) {
         return positionService.getPosition(id);
+    }
+
+    @RequestMapping(method=POST, path="/slack")
+    public String postSlackPosition(HttpServletRequest request) {
+
+        PositionResponse position = positionService.getPosition(request.getParameter("text"));
+
+        if (position.getName() == null) {
+            return String.format("Vessel with id &s could not be located");
+        }
+        else {
+            return String.format("%s (%s) is currently %s", position.getName(), position.getId(), position.getPosition());
+        }
+
     }
 
 }

@@ -21,15 +21,21 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 public class PositionResponse {
 
     private final String id;
+    private final String name;
     private final int position;
 
-    PositionResponse(String id, int position) {
+    PositionResponse(String id, String name, int position) {
         this.id = id;
+        this.name = name;
         this.position = position;
     }
 
     public String getId() {
         return id;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public int getPosition() {
@@ -40,6 +46,7 @@ public class PositionResponse {
     public String toString() {
         return new ToStringBuilder(this)
                 .append("id", id)
+                .append("name", name)
                 .append("position", position)
                 .toString();
     }

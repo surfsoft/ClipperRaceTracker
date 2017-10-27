@@ -28,6 +28,7 @@ class PositionResponseFactoryTest {
 
     private static final String VESSEL_ID = "CV21";
     private static final int POSITION = 3;
+    private static final String VESSEL_NAME = "Unicef";
 
     private final PositionResponseFactory underTest = new PositionResponseFactory();
 
@@ -37,9 +38,10 @@ class PositionResponseFactoryTest {
         Position position = mock(Position.class);
         when(position.getPosition()).thenReturn(POSITION);
 
-        PositionResponse positionResponse = underTest.toPositionResponse(VESSEL_ID, position);
+        PositionResponse positionResponse = underTest.toPositionResponse(VESSEL_ID, VESSEL_NAME, position);
 
         assertThat(positionResponse.getId(), is(VESSEL_ID));
+        assertThat(positionResponse.getName(), is(VESSEL_NAME));
         assertThat(positionResponse.getPosition(), is(POSITION));
 
     }

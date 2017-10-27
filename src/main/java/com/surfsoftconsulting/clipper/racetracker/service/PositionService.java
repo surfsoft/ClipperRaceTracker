@@ -46,9 +46,11 @@ public class PositionService {
     public PositionResponse getPosition(String id) {
 
         Position position = new Position();
+        String name = null;
         if (StringUtils.isNotBlank(id)) {
             Vessel vessel = vesselRepository.findById(id);
             if (vessel != null) {
+                name = vessel.getName();
                 Optional<Race> race = vessel.getLatestRace();
                 if (race.isPresent()) {
                     position = race.get().getLatestPosition();
@@ -62,7 +64,7 @@ public class PositionService {
             LOGGER.warn("id is blank");
         }
 
-        return positionResponseFactory.toPositionResponse(id, position);
+        return positionResponseFactory.toPositionResponse(id, name, position);
 
     }
 

@@ -22,8 +22,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class PositionResponseFactory {
 
-    public PositionResponse toPositionResponse(String id, Position position) {
-        return new PositionResponse(id, position.getPosition());
+    public PositionResponse toPositionResponse(String id, String name, Position position) {
+        return new PositionResponse(id, name, position.getPosition());
     }
 
 }
