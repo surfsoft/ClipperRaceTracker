@@ -18,6 +18,8 @@ package com.surfsoftconsulting.clipper.racetracker.slack;
 
 import com.surfsoftconsulting.clipper.racetracker.domain.Position;
 import com.surfsoftconsulting.clipper.racetracker.domain.Race;
+import com.surfsoftconsulting.clipper.racetracker.domain.Vessel;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -25,9 +27,65 @@ import java.time.LocalDateTime;
 import static java.lang.String.format;
 
 @Component
-public class PositionResponseRenderer extends AbstractSlackResponseRenderer {
+public class PositionResponseRenderer {
 
-    protected String createVesselResponse(String name, Race race) {
+    public String render(String text, Vessel vessel) {
+
+        final String response;
+        if (vessel == null) {
+            response = notFound(text);
+        }
+        else if (vessel.hasNotStarted()) {
+            response = "It looks like the Clipper Round the World race hasn't started yet (or at least nobody has told me about it if it has)";
+        }
+        else {
+            response = createVesselResponse(vessel.getName(), vessel.getLatestRace().get());
+        }
+
+        return response;
+
+    }
+
+    /**
+     * @param text
+     * @return
+     */
+    private String notFound(String text) {
+        if (StringUtils.isBlank(text)) {
+            return "Give us a clue - like 'visit seattle' or 'cv26'";
+        }
+        else {
+            return format("You asked for a position report for '%s' but that isn't sufficient to uniquely idenfity one yacht...", text);
+        }
+
+    }
+
+    private String toPosition(int position) {
+
+        final String suffix;
+        switch(position) {
+            case 1:
+                suffix = "st";
+                break;
+
+            case 2:
+                suffix = "nd";
+                break;
+
+            case 3:
+                suffix = "rd";
+                break;
+
+            default:
+                suffix = "th";
+                break;
+        }
+
+        return format("%s%s", position, suffix);
+
+    }
+
+    private String createVesselResponse(String name, Race race) {
 
         Position position = race.getLatestPosition();
         LocalDateTime finishTime = race.getFinishTime();

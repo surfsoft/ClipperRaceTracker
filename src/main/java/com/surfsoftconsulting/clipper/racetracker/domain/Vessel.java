@@ -83,6 +83,28 @@ public class Vessel {
         return races.isEmpty();
     }
 
+    public String getStatus(int raceNo) {
+
+        Optional<Race> race = getRace(raceNo);
+        if (race.isPresent()) {
+            if (race.get().isFinished()) {
+                return "finished)";
+            } else if (race.get().getLatestPosition().isInStealthMode()) {
+                return "stealth mode";
+            } else {
+                return race.get().getLatestPosition().getStatus().toLowerCase();
+            }
+        }
+        else {
+            return "not available";
+        }
+
+    }
+
+    public int getPosition(int raceNo) {
+        return getRace(raceNo).map(r -> r.getLatestPosition().getPosition()).orElse(0);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

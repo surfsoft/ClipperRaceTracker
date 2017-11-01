@@ -65,6 +65,10 @@ public class Race {
         this.finishTime = finishTime;
     }
 
+    public boolean isFinished() {
+        return finishTime != null;
+    }
+
     @JsonIgnore
     public Position getLatestPosition() {
         return positions

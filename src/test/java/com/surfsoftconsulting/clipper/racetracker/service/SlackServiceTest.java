@@ -18,6 +18,8 @@ package com.surfsoftconsulting.clipper.racetracker.service;
 
 import com.surfsoftconsulting.clipper.racetracker.domain.Vessel;
 import com.surfsoftconsulting.clipper.racetracker.domain.VesselResolver;
+import com.surfsoftconsulting.clipper.racetracker.rest.SlackResponse;
+import com.surfsoftconsulting.clipper.racetracker.rest.SlackResponseFactory;
 import com.surfsoftconsulting.clipper.racetracker.slack.PositionResponseRenderer;
 import org.junit.jupiter.api.Test;
 
@@ -33,8 +35,10 @@ class SlackServiceTest {
 
     private final VesselResolver vesselResolver = mock(VesselResolver.class);
     private final PositionResponseRenderer positionResponseRenderer = mock(PositionResponseRenderer.class);
+    private final SlackResponseFactory slackResponseFactory = mock(SlackResponseFactory.class);
+    private final RaceService raceService = mock(RaceService.class);
 
-    private final SlackService underTest = new SlackService(vesselResolver, positionResponseRenderer);
+    private final SlackService underTest = new SlackService(vesselResolver, raceService, positionResponseRenderer, slackResponseFactory);
 
     @Test
     void getPosition() {
@@ -42,8 +46,10 @@ class SlackServiceTest {
         Vessel vessel = mock(Vessel.class);
         when(vesselResolver.resolve(VESSEL_TEXT)).thenReturn(vessel);
         when(positionResponseRenderer.render(VESSEL_TEXT, vessel)).thenReturn(POSITION_RESPONSE);
+        SlackResponse slackResponse = mock(SlackResponse.class);
+        when(slackResponseFactory.toSlackResponse(POSITION_RESPONSE)).thenReturn(slackResponse);
 
-        assertThat(underTest.getPosition(VESSEL_TEXT), is(POSITION_RESPONSE));
+        assertThat(underTest.getRaceUpdate(VESSEL_TEXT), is(slackResponse));
 
     }
 
