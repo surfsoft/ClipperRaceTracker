@@ -19,7 +19,6 @@ package com.surfsoftconsulting.clipper.racetracker.slack;
 import com.surfsoftconsulting.clipper.racetracker.domain.Position;
 import com.surfsoftconsulting.clipper.racetracker.domain.Race;
 import com.surfsoftconsulting.clipper.racetracker.domain.Vessel;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -32,10 +31,7 @@ public class PositionResponseRenderer {
     public String render(String text, Vessel vessel) {
 
         final String response;
-        if (vessel == null) {
-            response = notFound(text);
-        }
-        else if (vessel.hasNotStarted()) {
+        if (vessel.hasNotStarted()) {
             response = "It looks like the Clipper Round the World race hasn't started yet (or at least nobody has told me about it if it has)";
         }
         else {
@@ -46,17 +42,23 @@ public class PositionResponseRenderer {
 
     }
 
-    /**
-     * @param text
-     * @return
-     */
-    private String notFound(String text) {
-        if (StringUtils.isBlank(text)) {
-            return "Give us a clue - like 'visit seattle' or 'cv26'";
+    private String createVesselResponse(String name, Race race) {
+
+        Position position = race.getLatestPosition();
+        LocalDateTime finishTime = race.getFinishTime();
+
+        final String response;
+        if (finishTime != null) {
+            response = format("%s has finished race %s in %s place", name, race.getRaceNo(), toPosition(position.getPosition()));
+        }
+        else if (position.isInStealthMode()) {
+            response = format("%s is in stealth mode", name);
         }
         else {
-            return format("You asked for a position report for '%s' but that isn't sufficient to uniquely idenfity one yacht...", text);
+            response = format("%s is in %s place", name, toPosition(position.getPosition()));
         }
+
+        return response;
 
     }
 
@@ -82,26 +84,6 @@ public class PositionResponseRenderer {
         }
 
         return format("%s%s", position, suffix);
-
-    }
-
-    private String createVesselResponse(String name, Race race) {
-
-        Position position = race.getLatestPosition();
-        LocalDateTime finishTime = race.getFinishTime();
-
-        final String response;
-        if (finishTime != null) {
-            response = format("%s has finished race %s in %s place", name, race.getRaceNo(), toPosition(position.getPosition()));
-        }
-        else if (position.isInStealthMode()) {
-            response = format("%s is in stealth mode", name);
-        }
-        else {
-            response = format("%s is in %s place", name, toPosition(position.getPosition()));
-        }
-
-        return response;
 
     }
 

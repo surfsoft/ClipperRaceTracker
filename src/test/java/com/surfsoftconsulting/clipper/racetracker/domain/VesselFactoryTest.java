@@ -1,11 +1,5 @@
 package com.surfsoftconsulting.clipper.racetracker.domain;
 
-import org.junit.jupiter.api.Test;
-
-import static java.util.Collections.emptySet;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-
 /*
  * Copyright 2017 Phil Haigh
  *
@@ -21,6 +15,12 @@ import static org.hamcrest.Matchers.is;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import org.junit.jupiter.api.Test;
+
+import static java.util.Collections.emptySet;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 class VesselFactoryTest {
 

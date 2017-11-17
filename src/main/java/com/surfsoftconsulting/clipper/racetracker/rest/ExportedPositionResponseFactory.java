@@ -1,12 +1,5 @@
 package com.surfsoftconsulting.clipper.racetracker.rest;
 
-import com.surfsoftconsulting.clipper.racetracker.domain.Position;
-import org.springframework.stereotype.Component;
-
-import java.util.List;
-
-import static java.util.stream.Collectors.toList;
-
 /*
  * Copyright 2017 Phil Haigh
  *
@@ -23,14 +16,13 @@ import static java.util.stream.Collectors.toList;
  * limitations under the License.
  */
 
+import com.surfsoftconsulting.clipper.racetracker.domain.Position;
+import org.springframework.stereotype.Component;
+
 @Component
 public class ExportedPositionResponseFactory {
 
-    public List<ExportedPositionResponse> toExportedPositionResponse(List<Position> positions) {
-        return positions.stream().map(this::toExportedPositionResponse).collect(toList());
-    }
-
-    private ExportedPositionResponse toExportedPositionResponse(Position position) {
+    public ExportedPositionResponse toExportedPositionResponse(Position position) {
         return new ExportedPositionResponse(position.getTimestamp(),
                 position.getPosition(),
                 position.getCoordinates() != null ? position.getCoordinates().getLatitude() : null,

@@ -17,7 +17,7 @@ package com.surfsoftconsulting.clipper.racetracker.service;
  */
 
 import com.surfsoftconsulting.clipper.racetracker.domain.*;
-import com.surfsoftconsulting.clipper.racetracker.rest.ExportedPositionResponseFactory;
+import com.surfsoftconsulting.clipper.racetracker.rest.ExportedPositionsResponseFactory;
 import com.surfsoftconsulting.clipper.racetracker.rest.VesselResponse;
 import com.surfsoftconsulting.clipper.racetracker.rest.VesselResponseFactory;
 import com.surfsoftconsulting.clipper.racetracker.web.RaceStandingsData;
@@ -57,9 +57,9 @@ class VesselServiceTest {
     private final PositionFactory positionFactory = mock(PositionFactory.class);
     private final SpeedAndCourseDataResolver speedAndCourseDataResolver = mock(SpeedAndCourseDataResolver.class);
     private final RaceFactory raceFactory = mock(RaceFactory.class);
-    private final ExportedPositionResponseFactory exportedPositionResponseFactory = mock(ExportedPositionResponseFactory.class);
+    private final ExportedPositionsResponseFactory exportedPositionsResponseFactory = mock(ExportedPositionsResponseFactory.class);
 
-    private final VesselService underTest = new VesselService(vesselRepository, vesselFactory, raceFactory, vesselResponseFactory, positionFactory, speedAndCourseDataResolver, exportedPositionResponseFactory);
+    private final VesselService underTest = new VesselService(vesselRepository, vesselFactory, raceFactory, vesselResponseFactory, positionFactory, speedAndCourseDataResolver, exportedPositionsResponseFactory);
 
     @Test
     void nullId() {
@@ -282,7 +282,7 @@ class VesselServiceTest {
         positions.add(position2);
         when(race.getPositions()).thenReturn(positions);
         List exportedPositions = mock(List.class);
-        when(exportedPositionResponseFactory.toExportedPositionResponse(asList(position2, position1))).thenReturn(exportedPositions);
+        when(exportedPositionsResponseFactory.toExportedPositionResponse(asList(position2, position1))).thenReturn(exportedPositions);
 
         assertThat(underTest.export(VESSEL_ID, RACE_NO), is(exportedPositions));
 

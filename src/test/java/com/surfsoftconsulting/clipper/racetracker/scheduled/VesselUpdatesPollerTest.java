@@ -16,6 +16,7 @@ package com.surfsoftconsulting.clipper.racetracker.scheduled;
  * limitations under the License.
  */
 
+import com.surfsoftconsulting.clipper.racetracker.service.RaceService;
 import com.surfsoftconsulting.clipper.racetracker.service.VesselService;
 import com.surfsoftconsulting.clipper.racetracker.web.*;
 import org.jsoup.nodes.Document;
@@ -39,14 +40,15 @@ class VesselUpdatesPollerTest {
     private final SpeedAndCourseDataParser speedAndCourseDataParser = mock(SpeedAndCourseDataParser.class);
     private final VesselService vesselService = mock(VesselService.class);
     private final RaceNumberParser raceNumberParser = mock(RaceNumberParser.class);
+    private final RaceService raceService = mock(RaceService.class);
 
-    private final VesselUpdatesPoller underTest = new VesselUpdatesPoller(raceStandingsDocumentFactory, raceStandingsDataParser, speedAndCourseDataParser, raceNumberParser, vesselService);
+    private final VesselUpdatesPoller underTest = new VesselUpdatesPoller(raceStandingsDocumentFactory, raceStandingsDataParser, speedAndCourseDataParser, raceNumberParser, vesselService, raceService);
 
     @Test
     void pollForUpdates() {
 
         Document raceStandingsDocument = mock(Document.class);
-        when(raceNumberParser.parse(raceStandingsDocument)).thenReturn(RACE_NO);
+        when(raceNumberParser.parse(raceStandingsDocument, raceService.getCurrentRace())).thenReturn(RACE_NO);
         when(raceStandingsDocumentFactory.fromUrl("http://clipperroundtheworld.com/race/standings")).thenReturn(raceStandingsDocument);
         List<SpeedAndCourseData> speedsAndCourses = mock(List.class);
         when(speedAndCourseDataParser.parse(raceStandingsDocument)).thenReturn(speedsAndCourses);
@@ -69,7 +71,7 @@ class VesselUpdatesPollerTest {
         underTest.pollForUpdates();
 
         verify(speedAndCourseDataParser, never()).parse(any(Document.class));
-        verify(raceNumberParser, never()).parse(any(Document.class));
+        verify(raceNumberParser, never()).parse(any(Document.class), any(Integer.class));
         verify(raceStandingsDataParser, never()).parse(any(Document.class));
 
     }

@@ -16,6 +16,7 @@ package com.surfsoftconsulting.clipper.racetracker.scheduled;
  * limitations under the License.
  */
 
+import com.surfsoftconsulting.clipper.racetracker.service.RaceService;
 import com.surfsoftconsulting.clipper.racetracker.service.VesselService;
 import com.surfsoftconsulting.clipper.racetracker.web.*;
 import org.jsoup.nodes.Document;
@@ -38,17 +39,19 @@ public class VesselUpdatesPoller {
     private final SpeedAndCourseDataParser speedAndCourseDataParser;
     private final RaceNumberParser raceNumberParser;
     private final VesselService vesselService;
+    private final RaceService raceService;
 
     public VesselUpdatesPoller(RaceStandingsDocumentFactory raceStandingsDocumentFactory,
                                RaceStandingsDataParser raceStandingsDataParser,
                                SpeedAndCourseDataParser speedAndCourseDataParser,
-                               RaceNumberParser raceNumberParser, VesselService vesselService) {
+                               RaceNumberParser raceNumberParser, VesselService vesselService, RaceService raceService) {
 
         this.raceStandingsDocumentFactory = raceStandingsDocumentFactory;
         this.raceStandingsDataParser = raceStandingsDataParser;
         this.speedAndCourseDataParser = speedAndCourseDataParser;
         this.raceNumberParser = raceNumberParser;
         this.vesselService = vesselService;
+        this.raceService = raceService;
 
     }
 
@@ -60,7 +63,7 @@ public class VesselUpdatesPoller {
         Document standingsPage = raceStandingsDocumentFactory.fromUrl(RACE_STANDINGS_PAGE);
         if (standingsPage != null) {
             List<SpeedAndCourseData> speedsAndCourses = speedAndCourseDataParser.parse(standingsPage);
-            int raceNo = raceNumberParser.parse(standingsPage);
+            int raceNo = raceNumberParser.parse(standingsPage, raceService.getCurrentRace());
             raceStandingsDataParser.parse(standingsPage).forEach(raceStandingsData -> vesselService.updatePosition(raceNo, raceStandingsData, speedsAndCourses));
         }
 
