@@ -32,7 +32,7 @@ public class VesselUpdatesPoller {
 
     private final Logger LOGGER = LoggerFactory.getLogger(VesselUpdatesPoller.class);
 
-    private static final String RACE_STANDINGS_PAGE = "http://clipperroundtheworld.com/race/standings";
+    private static final String RACE_STANDINGS_PAGE = "https://clipperroundtheworld.com/race/standings";
 
     private final RaceStandingsDocumentFactory raceStandingsDocumentFactory;
     private final RaceStandingsDataParser raceStandingsDataParser;
