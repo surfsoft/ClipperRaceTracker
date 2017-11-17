@@ -6,10 +6,11 @@ import org.jsoup.select.Elements;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.hamcrest.CoreMatchers.is;
 
 /*
  * Copyright 2017 Phil Haigh
@@ -47,7 +48,7 @@ class RaceNumberParserTest {
 
         when(raceNoElements.size()).thenReturn(2);
 
-        assertThat(underTest.parse(standingsPage, 1), is(1));
+        assertThrows(IllegalStateException.class, () -> underTest.parse(standingsPage));
 
     }
 
@@ -59,7 +60,7 @@ class RaceNumberParserTest {
         when(raceNoElements.get(0)).thenReturn(raceNoElement);
         when(raceNoElement.text()).thenReturn("trash");
 
-        assertThat(underTest.parse(standingsPage, 1), is(1));
+        assertThrows(IllegalStateException.class, () -> underTest.parse(standingsPage));
 
     }
 
@@ -71,7 +72,7 @@ class RaceNumberParserTest {
         when(raceNoElements.get(0)).thenReturn(raceNoElement);
         when(raceNoElement.text()).thenReturn("Race asd");
 
-        assertThat(underTest.parse(standingsPage, 1), is(1));
+        assertThrows(IllegalStateException.class, () -> underTest.parse(standingsPage));
 
     }
 
@@ -83,7 +84,7 @@ class RaceNumberParserTest {
         when(raceNoElements.get(0)).thenReturn(raceNoElement);
         when(raceNoElement.text()).thenReturn("Race 2");
 
-        assertThat(underTest.parse(standingsPage, 1), is(2));
+        assertThat(underTest.parse(standingsPage), is(2));
 
     }
 

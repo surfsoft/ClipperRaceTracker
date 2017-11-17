@@ -30,34 +30,32 @@ public class RaceNumberParser {
     private static final String RACENO_CLASS = "raceno";
     private static final String RACE_NUMBER_PREFIX = "Race ";
 
-    public int parse(Document standingsPage, int defaultRaceNo) {
-
-        int raceNo = defaultRaceNo;
+    public int parse(Document standingsPage) {
 
         Elements elements = standingsPage.body().getElementsByClass(RACENO_CLASS);
         if (elements.size() != 1) {
             String message = String.format("Found %s instances of class %s when expecting exactly one", elements.size(), RACENO_CLASS);
             LOGGER.error(message);
-        }
-        else {
-
-            String raceNoText = elements.get(0).text().trim();
-            if (!raceNoText.startsWith(RACE_NUMBER_PREFIX)) {
-                String message = String.format("Race number text '%s' doesn't start with the expected prefix '%s' - can't parse", raceNoText, RACE_NUMBER_PREFIX);
-                LOGGER.error(message);
-            }
-
-            String raceNumberAsString = raceNoText.substring(RACE_NUMBER_PREFIX.length());
-            try {
-                raceNo = Integer.parseInt(raceNumberAsString);
-            } catch (NumberFormatException e) {
-                String message = String.format("Race number '%s' isn't a valid number", raceNumberAsString);
-                LOGGER.error(message);
-            }
-
+            throw new IllegalStateException(message);
         }
 
-        return raceNo;
+        String raceNoText = elements.get(0).text().trim();
+        if (!raceNoText.startsWith(RACE_NUMBER_PREFIX)) {
+            String message = String.format("Race number text '%s' doesn't start with the expected prefix '%s' - can't parse", raceNoText, RACE_NUMBER_PREFIX);
+            LOGGER.error(message);
+            throw new IllegalStateException(message);
+        }
+
+        String raceNumberAsString = raceNoText.substring(RACE_NUMBER_PREFIX.length());
+        try {
+            return Integer.parseInt(raceNumberAsString);
+        }
+        catch(NumberFormatException e) {
+            String message = String.format("Race number '%s' isn't a valid number", raceNumberAsString);
+            LOGGER.error(message);
+            throw new IllegalStateException(message, e);
+
+        }
 
     }
 
