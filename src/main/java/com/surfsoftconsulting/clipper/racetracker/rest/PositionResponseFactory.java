@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
 public class PositionResponseFactory {
 
     public PositionResponse toPositionResponse(String id, String name, Position position) {
-        return new PositionResponse(id, name, position.getPosition());
+        return new PositionResponse(id, name, position.getPosition(), position.isInStealthMode() ? "S" : "R");
     }
 
 }

@@ -259,7 +259,14 @@ void handleRefresh() {
       jsonString.toCharArray(json, jsonString.length() + 1);
       StaticJsonBuffer<128> jsonBuffer;
       JsonObject& root = jsonBuffer.parseObject(json);
-      String position = root["position"];
+      String mode = root["mode"];
+      String position;
+      if (mode == "S") {
+        position = mode;
+      }
+      else {
+        position = root["position"];
+      }
       iotCore.setApplicationParam(POSITION_PARAM, position);
       lastRefreshChangeAt = millis();
     }

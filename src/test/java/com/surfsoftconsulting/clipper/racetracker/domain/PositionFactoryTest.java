@@ -1,6 +1,5 @@
 package com.surfsoftconsulting.clipper.racetracker.domain;
 
-import com.surfsoftconsulting.clipper.racetracker.rest.PositionResponse;
 import com.surfsoftconsulting.clipper.racetracker.service.PositionService;
 import com.surfsoftconsulting.clipper.racetracker.web.RaceStandingsData;
 import com.surfsoftconsulting.clipper.racetracker.web.SpeedAndCourseData;
@@ -47,7 +46,7 @@ class PositionFactoryTest {
 
     private final PositionService positionService = mock(PositionService.class);
 
-    private final PositionFactory underTest = new PositionFactory(positionService);
+    private final PositionFactory underTest = new PositionFactory();
     private final RaceStandingsData raceStandingsData = mock(RaceStandingsData.class);
     private final SpeedAndCourseData speedAndCourseData = mock(SpeedAndCourseData.class);
 
@@ -67,7 +66,7 @@ class PositionFactoryTest {
         when(speedAndCourseData.getSpeed()).thenReturn(SPEED);
         when(speedAndCourseData.getHeading()).thenReturn(HEADING);
 
-        Position position = underTest.fromRaceStandingsData(VESSEL_ID, raceStandingsData, speedAndCourseData);
+        Position position = underTest.fromRaceStandingsData(raceStandingsData, speedAndCourseData);
 
         assertThat(position.getPosition(), is(POSITION));
         assertThat(position.getCoordinates(), is(new Coordinates(LATITUDE, LONGITUDE)));
@@ -96,7 +95,7 @@ class PositionFactoryTest {
         when(raceStandingsData.getDistanceTravelled()).thenReturn(DISTANCE_TRAVELLED);
         when(raceStandingsData.getStatus()).thenReturn(STATUS);
 
-        Position position = underTest.fromRaceStandingsData(VESSEL_ID, raceStandingsData, null);
+        Position position = underTest.fromRaceStandingsData(raceStandingsData, null);
 
         assertThat(position.getPosition(), is(POSITION));
         assertThat(position.getCoordinates(), is(new Coordinates(LATITUDE, LONGITUDE)));
@@ -117,11 +116,9 @@ class PositionFactoryTest {
         when(raceStandingsData.isInStealthMode()).thenReturn(true);
         when(raceStandingsData.getTimestamp()).thenReturn(TIMESTAMP);
         when(raceStandingsData.getStatus()).thenReturn(STATUS);
-        PositionResponse positionResponse = mock(PositionResponse.class);
-        when(positionResponse.getPosition()).thenReturn(POSITION);
-        when(positionService.getPosition(VESSEL_ID)).thenReturn(positionResponse);
+        when(raceStandingsData.getPosition()).thenReturn(POSITION);
 
-        Position position = underTest.fromRaceStandingsData(VESSEL_ID, raceStandingsData, null);
+        Position position = underTest.fromRaceStandingsData(raceStandingsData, null);
 
         assertThat(position.getPosition(), is(POSITION));
         assertThat(position.getCoordinates(), is(nullValue()));
@@ -137,7 +134,7 @@ class PositionFactoryTest {
     }
 
     @Test
-    void fromRaceStandingsRowWWhenFinished() {
+    void fromRaceStandingsRowWhenFinished() {
 
         when(raceStandingsData.isInStealthMode()).thenReturn(false);
         when(raceStandingsData.getTimestamp()).thenReturn(TIMESTAMP);
@@ -148,7 +145,7 @@ class PositionFactoryTest {
         when(raceStandingsData.getDistanceTravelled()).thenReturn(DISTANCE_TRAVELLED);
         when(raceStandingsData.getStatus()).thenReturn(STATUS);
 
-        Position position = underTest.fromRaceStandingsData(VESSEL_ID, raceStandingsData, null);
+        Position position = underTest.fromRaceStandingsData(raceStandingsData, null);
 
         assertThat(position.getPosition(), is(POSITION));
         assertThat(position.getCoordinates(), is(new Coordinates(LATITUDE, LONGITUDE)));

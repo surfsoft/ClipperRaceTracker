@@ -23,11 +23,13 @@ public class PositionResponse {
     private final String id;
     private final String name;
     private final int position;
+    private final String mode;
 
-    PositionResponse(String id, String name, int position) {
+    PositionResponse(String id, String name, int position, String mode) {
         this.id = id;
         this.name = name;
         this.position = position;
+        this.mode = mode;
     }
 
     public String getId() {
@@ -42,12 +44,17 @@ public class PositionResponse {
         return position;
     }
 
+    public String getMode() {
+        return mode;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this)
                 .append("id", id)
                 .append("name", name)
                 .append("position", position)
+                .append("mode", mode)
                 .toString();
     }
 

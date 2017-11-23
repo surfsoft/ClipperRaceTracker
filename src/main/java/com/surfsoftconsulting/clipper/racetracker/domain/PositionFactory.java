@@ -16,7 +16,6 @@ package com.surfsoftconsulting.clipper.racetracker.domain;
  * limitations under the License.
  */
 
-import com.surfsoftconsulting.clipper.racetracker.service.PositionService;
 import com.surfsoftconsulting.clipper.racetracker.web.RaceStandingsData;
 import com.surfsoftconsulting.clipper.racetracker.web.SpeedAndCourseData;
 import org.springframework.stereotype.Component;
@@ -26,18 +25,12 @@ import java.time.LocalDateTime;
 @Component
 public class PositionFactory {
 
-    private final PositionService positionService;
-
-    public PositionFactory(PositionService positionService) {
-        this.positionService = positionService;
-    }
-
-    public Position fromRaceStandingsData(String id, RaceStandingsData row, SpeedAndCourseData speedAndCourseData) {
+    public Position fromRaceStandingsData(RaceStandingsData row, SpeedAndCourseData speedAndCourseData) {
 
         boolean inStealthMode = row.isInStealthMode();
         LocalDateTime timestamp = row.getTimestamp();
 
-        final int position;
+        final int position = row.getPosition();
         Coordinates coordinates = null;
         Double speed = null;
         Integer heading = null;
@@ -47,12 +40,9 @@ public class PositionFactory {
         String status = row.getStatus();
         LocalDateTime finishTime = null;
 
-        if (inStealthMode) {
-            position = positionService.getPosition(id).getPosition();
-        }
-        else {
+
+        if (!inStealthMode) {
             finishTime = row.getFinishTime();
-            position = row.getPosition();
             coordinates = new Coordinates(row.getLatitude(), row.getLongitude());
             if (finishTime == null) {
                 if (speedAndCourseData != null) {
@@ -64,6 +54,7 @@ public class PositionFactory {
             }
             distanceTravelled = row.getDistanceTravelled();
         }
+
         return new Position(position, coordinates, speed, heading, distanceRemaining, distanceToNextPosition, distanceTravelled, timestamp, status, finishTime, inStealthMode);
 
     }

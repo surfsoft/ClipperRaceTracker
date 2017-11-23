@@ -29,20 +29,47 @@ class PositionResponseFactoryTest {
     private static final String VESSEL_ID = "CV21";
     private static final int POSITION = 3;
     private static final String VESSEL_NAME = "Unicef";
+    private static final String RACING = "R";
+    private static final String STEALTH = "S";
 
     private final PositionResponseFactory underTest = new PositionResponseFactory();
 
     @Test
-    void toPositionResponse() {
+    void notInStealthMode() {
 
-        Position position = mock(Position.class);
-        when(position.getPosition()).thenReturn(POSITION);
+        Position position = mockPosition(false);
 
         PositionResponse positionResponse = underTest.toPositionResponse(VESSEL_ID, VESSEL_NAME, position);
 
         assertThat(positionResponse.getId(), is(VESSEL_ID));
         assertThat(positionResponse.getName(), is(VESSEL_NAME));
         assertThat(positionResponse.getPosition(), is(POSITION));
+        assertThat(positionResponse.getMode(), is(RACING));
+
+    }
+
+    @Test
+    void inStealthMode() {
+
+        Position position = mockPosition(true);
+
+        PositionResponse positionResponse = underTest.toPositionResponse(VESSEL_ID, VESSEL_NAME, position);
+
+        assertThat(positionResponse.getId(), is(VESSEL_ID));
+        assertThat(positionResponse.getName(), is(VESSEL_NAME));
+        assertThat(positionResponse.getPosition(), is(POSITION));
+        assertThat(positionResponse.getMode(), is(STEALTH));
+
+    }
+
+    private Position mockPosition(boolean inStealthMode) {
+
+        Position mockPosition = mock(Position.class);
+
+        when(mockPosition.getPosition()).thenReturn(POSITION);
+        when(mockPosition.isInStealthMode()).thenReturn(inStealthMode);
+
+        return mockPosition;
 
     }
 

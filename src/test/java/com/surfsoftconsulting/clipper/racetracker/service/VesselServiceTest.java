@@ -155,7 +155,7 @@ class VesselServiceTest {
         SpeedAndCourseData speedAndCourseData = mock(SpeedAndCourseData.class);
         when(speedAndCourseDataResolver.resolve(VESSEL_NAME, speedsAndCourses)).thenReturn(speedAndCourseData);
         Position newPosition = mock(Position.class);
-        when(positionFactory.fromRaceStandingsData(VESSEL_ID, raceStandingsData, speedAndCourseData)).thenReturn(newPosition);
+        when(positionFactory.fromRaceStandingsData(raceStandingsData, speedAndCourseData)).thenReturn(newPosition);
         Set<Position> positions = mock(Set.class);
         when(race.getPositions()).thenReturn(positions);
 
@@ -186,7 +186,7 @@ class VesselServiceTest {
         SpeedAndCourseData speedAndCourseData = mock(SpeedAndCourseData.class);
         when(speedAndCourseDataResolver.resolve(VESSEL_NAME, speedsAndCourses)).thenReturn(speedAndCourseData);
         Position newPosition = mock(Position.class);
-        when(positionFactory.fromRaceStandingsData(VESSEL_ID, raceStandingsData, speedAndCourseData)).thenReturn(newPosition);
+        when(positionFactory.fromRaceStandingsData(raceStandingsData, speedAndCourseData)).thenReturn(newPosition);
         Set<Position> positions = mock(Set.class);
         when(race.getPositions()).thenReturn(positions);
 
@@ -216,7 +216,7 @@ class VesselServiceTest {
         SpeedAndCourseData speedAndCourseData = mock(SpeedAndCourseData.class);
         when(speedAndCourseDataResolver.resolve(VESSEL_NAME, speedsAndCourses)).thenReturn(speedAndCourseData);
         Position newPosition = mock(Position.class);
-        when(positionFactory.fromRaceStandingsData(VESSEL_ID, raceStandingsData, speedAndCourseData)).thenReturn(newPosition);
+        when(positionFactory.fromRaceStandingsData(raceStandingsData, speedAndCourseData)).thenReturn(newPosition);
         Set<Position> positions = mock(Set.class);
         when(race.getPositions()).thenReturn(positions);
 
