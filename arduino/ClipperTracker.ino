@@ -261,7 +261,7 @@ void handleRefresh() {
       JsonObject& root = jsonBuffer.parseObject(json);
       String mode = root["mode"];
       String position;
-      if (mode == "S") {
+      if (mode == "s") {
         position = mode;
       }
       else {

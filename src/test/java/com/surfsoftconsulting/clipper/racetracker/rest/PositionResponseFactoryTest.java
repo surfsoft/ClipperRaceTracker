@@ -29,8 +29,8 @@ class PositionResponseFactoryTest {
     private static final String VESSEL_ID = "CV21";
     private static final int POSITION = 3;
     private static final String VESSEL_NAME = "Unicef";
-    private static final String RACING = "R";
-    private static final String STEALTH = "S";
+    private static final String RACING = "r";
+    private static final String STEALTH = "s";
 
     private final PositionResponseFactory underTest = new PositionResponseFactory();
 
