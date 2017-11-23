@@ -2,7 +2,7 @@
 
 A Java service that scrapes data the cliiperroundtheworld.com race tracker and stores it for use
 
-The source for the data is the web page http://clipperroundtheworld.com/race/standings - the race standings table and parts of the JavaScript (that contain speed and heading) are parsed.
+The source for the data is the web page https://clipperroundtheworld.com/race/standings - the race standings table and parts of the JavaScript (that contain speed and heading) are parsed.
 
 Data is stored in a MongoDB collection, 'Vessel'. 
 
@@ -20,7 +20,7 @@ You will need Java 8 and MongoDB 3 installed. Build the code using gradlew (Unix
 Run the built JAR file: `java -jar build/libs/racetracker-0.0.1-SNAPSHOT.jar`
 
 By default the application will connect to MongoDB on port 27017 and create its collections under a schema called 'test'. 
-To change this, configure some or all of the following database connection properties:
+To change this, explicitly configure the database connection uri:
 - spring.data.mongodb.uri (default is "mongodb://localhost/test")
 
 If you don't want to use spring.data.mongodb.uri then set these properties instead:
@@ -58,7 +58,7 @@ This is an ESP8266 connected to an AdaFruit NeoPixel 8x8 matrix.
 It uses the service above to display the current race position of your selected boat.
 
 I can, on request, supply a kit comprising a pre-flashed ESP8266 together with a NeoPixel 8x8 matrix and connecting wires.
-You'll need to assemble these items, (instructions provided) connect a USB 3 power supply (not provided).
+You'll need to assemble these items, (instructions provided) and connect a USB 3 power supply (not provided).
 Optionally you can add a case and/or a LiPo battery for mains-free use (the USB charger charges the LiPo when both are plugged in).
 
 Once it is all powered up all you have to do is configure it: 
@@ -66,9 +66,3 @@ Once it is all powered up all you have to do is configure it:
 - Choose your boat on the configuration page
 
 And that's it. The display updates regularly from the web and its configuration is preserved when turned off.
-
-## Flashing your own ESP8266
-
-This is coming soon.
-I am about to open source an ESP8266 library which encapsulates and simplifies the core functions of the ESP8266.
-The library allows you to concentrate on developing your IoT functionality rather than worrying about core connectivity and configuration.
