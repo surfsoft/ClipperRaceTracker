@@ -34,7 +34,7 @@ import static org.mockito.Mockito.when;
 
 class SpeedAndCourseDataParserTest {
 
-    private final String SCRIPT =
+    private static final String SCRIPT =
             "content: \"" +
             "<div class=\"markerInfo\" style=\"position: absolute; visibility: visible; width: 170px; left: 986.403px; bottom: -366.633px; cursor: default;\">" +
             "    <h3 class=\"\" style=\"background-color: #166fb8; color: #FFFFFF\"><span>Unicef</span></h3>" +

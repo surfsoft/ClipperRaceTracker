@@ -31,9 +31,9 @@ class VesselResolverTest {
     private static final String VESSEL_NAME_1 = "Visit Seattle";
     private static final String VESSEL_NAME_2 = "Unicef";
     private static final String VESSEL_NAME_3 = "Greenings";
-    public static final String PARTIAL_VESSEL_NAME = "uni";
-    public static final String UNKNOWN_VESSEL = "Great Britain";
-    public static final String AMBIGUOUS_VESSEL_NAME = "e";
+    private static final String PARTIAL_VESSEL_NAME = "uni";
+    private static final String UNKNOWN_VESSEL = "Great Britain";
+    private static final String AMBIGUOUS_VESSEL_NAME = "e";
 
     private final VesselRepository vesselRepository = mock(VesselRepository.class);
 

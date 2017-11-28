@@ -28,7 +28,7 @@ import static java.lang.String.format;
 @Component
 public class PositionResponseRenderer {
 
-    public String render(String text, Vessel vessel) {
+    public String render(Vessel vessel) {
 
         final String response;
         if (vessel.hasNotStarted()) {

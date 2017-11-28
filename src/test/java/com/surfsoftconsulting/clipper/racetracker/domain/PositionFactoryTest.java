@@ -1,18 +1,5 @@
 package com.surfsoftconsulting.clipper.racetracker.domain;
 
-import com.surfsoftconsulting.clipper.racetracker.service.PositionService;
-import com.surfsoftconsulting.clipper.racetracker.web.RaceStandingsData;
-import com.surfsoftconsulting.clipper.racetracker.web.SpeedAndCourseData;
-import org.junit.jupiter.api.Test;
-
-import java.time.LocalDateTime;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 /*
  * Copyright 2017 Phil Haigh
  *
@@ -29,9 +16,20 @@ import static org.mockito.Mockito.when;
  * limitations under the License.
  */
 
+import com.surfsoftconsulting.clipper.racetracker.web.RaceStandingsData;
+import com.surfsoftconsulting.clipper.racetracker.web.SpeedAndCourseData;
+import org.junit.jupiter.api.Test;
+
+import java.time.LocalDateTime;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 class PositionFactoryTest {
 
-    private static final String VESSEL_ID = "CV21";
     private static final int POSITION = 3;
     private static final LocalDateTime TIMESTAMP = LocalDateTime.of(2017, 8, 29, 14, 30, 0);
     private static final LocalDateTime FINISH_TIMESTAMP = LocalDateTime.of(2017, 9, 30, 18, 10, 0);
@@ -42,9 +40,7 @@ class PositionFactoryTest {
     private static final Double DISTANCE_REMAINING = Double.valueOf("1043.2");
     private static final Double DISTANCE_TO_LEAD_VESSEL = Double.valueOf("14.32");
     private static final Double DISTANCE_TRAVELLED = Double.valueOf("2143.89");
-    public static final String STATUS = "racing";
-
-    private final PositionService positionService = mock(PositionService.class);
+    private static final String STATUS = "racing";
 
     private final PositionFactory underTest = new PositionFactory();
     private final RaceStandingsData raceStandingsData = mock(RaceStandingsData.class);

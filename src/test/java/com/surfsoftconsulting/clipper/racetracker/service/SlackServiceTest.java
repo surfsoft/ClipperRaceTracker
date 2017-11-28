@@ -65,7 +65,7 @@ class SlackServiceTest {
 
         Vessel vessel = mock(Vessel.class);
         when(vesselResolver.resolve(VESSEL_TEXT)).thenReturn(vessel);
-        when(positionResponseRenderer.render(VESSEL_TEXT, vessel)).thenReturn(POSITION_RESPONSE);
+        when(positionResponseRenderer.render(vessel)).thenReturn(POSITION_RESPONSE);
         SlackResponse slackResponse = mock(SlackResponse.class);
         when(slackResponseFactory.toSlackResponse(POSITION_RESPONSE)).thenReturn(slackResponse);
 

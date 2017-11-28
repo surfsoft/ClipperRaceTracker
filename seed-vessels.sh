@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 curl -X POST -H "Content-Type: application/x-www-form-urlencoded" -d "id=cv20&name=Liverpool%202018" localhost:8080/vessel
 curl -X POST -H "Content-Type: application/x-www-form-urlencoded" -d "id=cv21&name=Unicef" localhost:8080/vessel
 curl -X POST -H "Content-Type: application/x-www-form-urlencoded" -d "id=cv22&name=Garmin" localhost:8080/vessel

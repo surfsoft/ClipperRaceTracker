@@ -1,17 +1,5 @@
 package com.surfsoftconsulting.clipper.racetracker.web;
 
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.hamcrest.CoreMatchers.is;
-
 /*
  * Copyright 2017 Phil Haigh
  *
@@ -27,6 +15,19 @@ import static org.hamcrest.CoreMatchers.is;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.hamcrest.CoreMatchers.is;
+
 class RaceNumberParserTest {
 
     private static final String RACENO_CLASS = "raceno";

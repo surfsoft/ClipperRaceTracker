@@ -52,7 +52,7 @@ public class SlackService {
             return slackResponseFactory.toSlackResponse(raceHeadline, vessels);
         }
         else {
-            return slackResponseFactory.toSlackResponse(positionResponseRenderer.render(text, vesselResolver.resolve(text.trim().toLowerCase())));
+            return slackResponseFactory.toSlackResponse(positionResponseRenderer.render(vesselResolver.resolve(text.trim().toLowerCase())));
         }
 
     }

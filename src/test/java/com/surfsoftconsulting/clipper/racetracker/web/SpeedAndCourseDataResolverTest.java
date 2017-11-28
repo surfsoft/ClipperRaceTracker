@@ -1,17 +1,5 @@
 package com.surfsoftconsulting.clipper.racetracker.web;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
-import static java.util.Arrays.asList;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 /*
  * Copyright 2017 Phil Haigh
  *
@@ -27,6 +15,18 @@ import static org.mockito.Mockito.when;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
+import static java.util.Arrays.asList;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class SpeedAndCourseDataResolverTest {
 

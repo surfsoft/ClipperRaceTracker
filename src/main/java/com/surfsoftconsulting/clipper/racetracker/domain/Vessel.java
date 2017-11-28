@@ -88,7 +88,7 @@ public class Vessel {
         Optional<Race> race = getRace(raceNo);
         if (race.isPresent()) {
             if (race.get().isFinished()) {
-                return "finished)";
+                return "finished";
             } else if (race.get().getLatestPosition().isInStealthMode()) {
                 return "stealth mode";
             } else {

@@ -87,7 +87,7 @@ class RaceStandingsDataTest {
 
     @Test
     void getPosition() {
-        assertThat(fourthPlace.getPosition(), is(Integer.valueOf(4)));
+        assertThat(fourthPlace.getPosition(), is(4));
     }
 
     @Test
