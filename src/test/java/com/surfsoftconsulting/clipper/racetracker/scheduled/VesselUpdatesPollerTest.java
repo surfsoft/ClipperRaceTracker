@@ -47,7 +47,7 @@ class VesselUpdatesPollerTest {
 
         Document raceStandingsDocument = mock(Document.class);
         when(raceNumberParser.parse(raceStandingsDocument)).thenReturn(RACE_NO);
-        when(raceStandingsDocumentFactory.fromUrl("https://clipperroundtheworld.com/race/standings")).thenReturn(raceStandingsDocument);
+        when(raceStandingsDocumentFactory.fromUrl("https://www.clipperroundtheworld.com/race/standings")).thenReturn(raceStandingsDocument);
         List<SpeedAndCourseData> speedsAndCourses = mock(List.class);
         when(speedAndCourseDataParser.parse(raceStandingsDocument)).thenReturn(speedsAndCourses);
         RaceStandingsData raceStandingsData1 = mock(RaceStandingsData.class);

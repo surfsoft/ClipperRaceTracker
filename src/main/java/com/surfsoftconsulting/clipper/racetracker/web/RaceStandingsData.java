@@ -35,7 +35,13 @@ public class RaceStandingsData {
     }
 
     public Integer getPosition() {
-        return Integer.valueOf(tableRow.getElementsByTag("td").get(0).getElementsByClass("num").text().trim());
+        String positionString = tableRow.getElementsByTag("td").get(0).getElementsByClass("num").text().trim();
+        if (positionString.equals("-")) {
+            return 99; // Stealth mode, this is a hack for now
+        }
+        else {
+            return Integer.valueOf(positionString);
+        }
     }
 
     public String getName() {

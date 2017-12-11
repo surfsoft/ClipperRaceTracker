@@ -110,6 +110,7 @@ public class VesselService {
                         SpeedAndCourseData speedAndCourseData = speedAndCourseDataResolver.resolve(vessel.getName(), speedsAndCourses);
                         race.get().getPositions().add(positionFactory.fromRaceStandingsData(raceStandingsData, speedAndCourseData));
                         update = true;
+                        LOGGER.debug("Vessel '{}' - position {} - will be updated", raceStandingsData.getName(), raceStandingsData.getPosition());
                     } else {
                         LOGGER.debug("Vessel '{}' has no new data available", raceStandingsData.getName());
                     }
