@@ -27,8 +27,6 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-//import org.junit.jupiter.api.BeforeEach;
-
 class PositionResponseFactoryTest {
 
     private static final String VESSEL_ID = "CV21";

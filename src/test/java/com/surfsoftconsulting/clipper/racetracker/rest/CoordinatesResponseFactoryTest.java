@@ -28,8 +28,8 @@ import static org.mockito.Mockito.when;
 
 class CoordinatesResponseFactoryTest {
 
-    private static final Double LATITUDE = new Double(21.456);
-    private static final Double LONGITUDE = new Double(14.234);
+    private static final Double LATITUDE = 21.456;
+    private static final Double LONGITUDE = 14.234;
 
     private final CoordinatesResponseFactory underTest = new CoordinatesResponseFactory();
 

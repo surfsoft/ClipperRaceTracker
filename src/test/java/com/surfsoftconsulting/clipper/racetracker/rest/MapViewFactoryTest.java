@@ -26,8 +26,8 @@ import static org.mockito.Mockito.when;
  */
 class MapViewFactoryTest {
 
-    private static final Double LATITUDE = new Double(21.456);
-    private static final Double LONGITUDE = new Double(14.234);
+    private static final Double LATITUDE = 21.456;
+    private static final Double LONGITUDE = 14.234;
     private static final String MAP_VIEW_URL_TEMPLATE = "https://www.google.com/maps/?q=%s,%s";
 
     private final MapViewFactory underTest = new MapViewFactory();
