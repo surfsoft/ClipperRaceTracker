@@ -16,13 +16,17 @@ package com.surfsoftconsulting.clipper.racetracker.rest;
  * limitations under the License.
  */
 
+import com.surfsoftconsulting.clipper.racetracker.domain.Coordinates;
 import com.surfsoftconsulting.clipper.racetracker.domain.Position;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
+//import org.junit.jupiter.api.BeforeEach;
 
 class PositionResponseFactoryTest {
 
@@ -32,7 +36,16 @@ class PositionResponseFactoryTest {
     private static final String RACING = "r";
     private static final String STEALTH = "s";
 
-    private final PositionResponseFactory underTest = new PositionResponseFactory();
+    private final CoordinatesResponseFactory coordinatesResponseFactory = mock(CoordinatesResponseFactory.class);
+
+    private final PositionResponseFactory underTest = new PositionResponseFactory(coordinatesResponseFactory);
+    private final Coordinates coordinates = mock(Coordinates.class);
+    private final CoordinatesResponse coordinatesResponse = mock(CoordinatesResponse.class);
+
+    @BeforeEach
+    void setUp() {
+        when(coordinatesResponseFactory.getCoordinatesResponse(coordinates)).thenReturn(coordinatesResponse);
+    }
 
     @Test
     void notInStealthMode() {
@@ -45,6 +58,7 @@ class PositionResponseFactoryTest {
         assertThat(positionResponse.getName(), is(VESSEL_NAME));
         assertThat(positionResponse.getPosition(), is(POSITION));
         assertThat(positionResponse.getMode(), is(RACING));
+        assertThat(positionResponse.getCoordinatesResponse(), is(coordinatesResponse));
 
     }
 
@@ -59,6 +73,7 @@ class PositionResponseFactoryTest {
         assertThat(positionResponse.getName(), is(VESSEL_NAME));
         assertThat(positionResponse.getPosition(), is(POSITION));
         assertThat(positionResponse.getMode(), is(STEALTH));
+        assertThat(positionResponse.getCoordinatesResponse(), is(coordinatesResponse));
 
     }
 
@@ -67,6 +82,7 @@ class PositionResponseFactoryTest {
         Position mockPosition = mock(Position.class);
 
         when(mockPosition.getPosition()).thenReturn(POSITION);
+        when(mockPosition.getCoordinates()).thenReturn(coordinates);
         when(mockPosition.isInStealthMode()).thenReturn(inStealthMode);
 
         return mockPosition;

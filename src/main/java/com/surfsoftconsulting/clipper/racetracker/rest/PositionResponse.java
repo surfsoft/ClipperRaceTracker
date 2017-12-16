@@ -24,12 +24,14 @@ public class PositionResponse {
     private final String name;
     private final int position;
     private final String mode;
+    private final CoordinatesResponse coordinatesResponse;
 
-    PositionResponse(String id, String name, int position, String mode) {
+    PositionResponse(String id, String name, int position, String mode, CoordinatesResponse coordinatesResponse) {
         this.id = id;
         this.name = name;
         this.position = position;
         this.mode = mode;
+        this.coordinatesResponse = coordinatesResponse;
     }
 
     public String getId() {
@@ -48,6 +50,10 @@ public class PositionResponse {
         return mode;
     }
 
+    public CoordinatesResponse getCoordinatesResponse() {
+        return coordinatesResponse;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this)
@@ -55,6 +61,7 @@ public class PositionResponse {
                 .append("name", name)
                 .append("position", position)
                 .append("mode", mode)
+                .append("coordinatesResponse", coordinatesResponse)
                 .toString();
     }
 

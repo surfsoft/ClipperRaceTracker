@@ -16,21 +16,21 @@ package com.surfsoftconsulting.clipper.racetracker.rest;
  * limitations under the License.
  */
 
-import com.surfsoftconsulting.clipper.racetracker.domain.Position;
+import com.surfsoftconsulting.clipper.racetracker.domain.Coordinates;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PositionResponseFactory {
+public class CoordinatesResponseFactory {
 
-    private final CoordinatesResponseFactory coordinatesResponseFactory;
+    CoordinatesResponse getCoordinatesResponse(Coordinates coordinates) {
 
-    public PositionResponseFactory(CoordinatesResponseFactory coordinatesResponseFactory) {
-        this.coordinatesResponseFactory = coordinatesResponseFactory;
-    }
+        if (coordinates == null) {
+            return null;
+        }
+        else {
+            return new CoordinatesResponse(coordinates.getLatitude(), coordinates.getLongitude());
+        }
 
-    public PositionResponse toPositionResponse(String id, String name, Position position) {
-        CoordinatesResponse coordinatesResponse = coordinatesResponseFactory.getCoordinatesResponse(position.getCoordinates());
-        return new PositionResponse(id, name, position.getPosition(), position.isInStealthMode() ? "s" : "r", coordinatesResponse);
     }
 
 }
