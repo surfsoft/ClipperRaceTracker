@@ -23,6 +23,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -35,10 +36,12 @@ class PositionResponseFactoryTest {
     private static final String VESSEL_NAME = "Unicef";
     private static final String RACING = "r";
     private static final String STEALTH = "s";
+    private static final String MAP_VIEW = "https://www.google.com/maps/?q=-15.623037,18.388672";
 
     private final CoordinatesResponseFactory coordinatesResponseFactory = mock(CoordinatesResponseFactory.class);
+    private final MapViewFactory mapViewFactory = mock(MapViewFactory.class);
 
-    private final PositionResponseFactory underTest = new PositionResponseFactory(coordinatesResponseFactory);
+    private final PositionResponseFactory underTest = new PositionResponseFactory(coordinatesResponseFactory, mapViewFactory);
     private final Coordinates coordinates = mock(Coordinates.class);
     private final CoordinatesResponse coordinatesResponse = mock(CoordinatesResponse.class);
 
@@ -51,6 +54,7 @@ class PositionResponseFactoryTest {
     void notInStealthMode() {
 
         Position position = mockPosition(false);
+        when(mapViewFactory.createMapView(coordinates)).thenReturn(MAP_VIEW);
 
         PositionResponse positionResponse = underTest.toPositionResponse(VESSEL_ID, VESSEL_NAME, position);
 
@@ -59,6 +63,7 @@ class PositionResponseFactoryTest {
         assertThat(positionResponse.getPosition(), is(POSITION));
         assertThat(positionResponse.getMode(), is(RACING));
         assertThat(positionResponse.getCoordinatesResponse(), is(coordinatesResponse));
+        assertThat(positionResponse.getMapView(), is(MAP_VIEW));
 
     }
 
@@ -66,6 +71,7 @@ class PositionResponseFactoryTest {
     void inStealthMode() {
 
         Position position = mockPosition(true);
+        when(mapViewFactory.createMapView(null)).thenReturn(null);
 
         PositionResponse positionResponse = underTest.toPositionResponse(VESSEL_ID, VESSEL_NAME, position);
 
@@ -73,7 +79,8 @@ class PositionResponseFactoryTest {
         assertThat(positionResponse.getName(), is(VESSEL_NAME));
         assertThat(positionResponse.getPosition(), is(POSITION));
         assertThat(positionResponse.getMode(), is(STEALTH));
-        assertThat(positionResponse.getCoordinatesResponse(), is(coordinatesResponse));
+        assertThat(positionResponse.getCoordinatesResponse(), is(nullValue()));
+        assertThat(positionResponse.getMapView(), is(nullValue()));
 
     }
 
@@ -82,7 +89,7 @@ class PositionResponseFactoryTest {
         Position mockPosition = mock(Position.class);
 
         when(mockPosition.getPosition()).thenReturn(POSITION);
-        when(mockPosition.getCoordinates()).thenReturn(coordinates);
+        when(mockPosition.getCoordinates()).thenReturn(inStealthMode ? null : coordinates);
         when(mockPosition.isInStealthMode()).thenReturn(inStealthMode);
 
         return mockPosition;

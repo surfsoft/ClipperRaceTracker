@@ -25,13 +25,15 @@ public class PositionResponse {
     private final int position;
     private final String mode;
     private final CoordinatesResponse coordinatesResponse;
+    private final String mapView;
 
-    PositionResponse(String id, String name, int position, String mode, CoordinatesResponse coordinatesResponse) {
+    PositionResponse(String id, String name, int position, String mode, CoordinatesResponse coordinatesResponse, String mapView) {
         this.id = id;
         this.name = name;
         this.position = position;
         this.mode = mode;
         this.coordinatesResponse = coordinatesResponse;
+        this.mapView = mapView;
     }
 
     public String getId() {
@@ -54,6 +56,10 @@ public class PositionResponse {
         return coordinatesResponse;
     }
 
+    public String getMapView() {
+        return mapView;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this)
@@ -62,6 +68,7 @@ public class PositionResponse {
                 .append("position", position)
                 .append("mode", mode)
                 .append("coordinatesResponse", coordinatesResponse)
+                .append("mapView", mapView)
                 .toString();
     }
 

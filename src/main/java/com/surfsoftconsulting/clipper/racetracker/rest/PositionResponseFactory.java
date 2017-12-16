@@ -23,14 +23,17 @@ import org.springframework.stereotype.Component;
 public class PositionResponseFactory {
 
     private final CoordinatesResponseFactory coordinatesResponseFactory;
+    private final MapViewFactory mapViewFactory;
 
-    public PositionResponseFactory(CoordinatesResponseFactory coordinatesResponseFactory) {
+    public PositionResponseFactory(CoordinatesResponseFactory coordinatesResponseFactory, MapViewFactory mapViewFactory) {
         this.coordinatesResponseFactory = coordinatesResponseFactory;
+        this.mapViewFactory = mapViewFactory;
     }
 
     public PositionResponse toPositionResponse(String id, String name, Position position) {
         CoordinatesResponse coordinatesResponse = coordinatesResponseFactory.getCoordinatesResponse(position.getCoordinates());
-        return new PositionResponse(id, name, position.getPosition(), position.isInStealthMode() ? "s" : "r", coordinatesResponse);
+        String mapView = mapViewFactory.createMapView(position.getCoordinates());
+        return new PositionResponse(id, name, position.getPosition(), position.isInStealthMode() ? "s" : "r", coordinatesResponse, mapView);
     }
 
 }
