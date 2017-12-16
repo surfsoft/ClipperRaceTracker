@@ -43,6 +43,9 @@
 
 #define RACETRACKER_URL "http://clipper.surfsoftconsulting.com"
 
+// see http://arduinojson.org/faq/how-to-determine-the-buffer-size/
+const int BUFFER_SIZE = 309; // JSON_OBJECT_SIZE(6) + JSON_OBJECT_SIZE(2);
+
 byte symbols[14][8] = {
     // ?
     { B00011100,
@@ -255,16 +258,32 @@ void handleRefresh() {
     int httpCode = http.GET();
     if (httpCode == HTTP_CODE_OK) {
       String jsonString = http.getString();
+
+#ifdef DEBUG
+  Serial.println(jsonString);
+#endif
+
       char json[jsonString.length() + 1];
       jsonString.toCharArray(json, jsonString.length() + 1);
-      StaticJsonBuffer<128> jsonBuffer;
+      StaticJsonBuffer<BUFFER_SIZE> jsonBuffer;
       JsonObject& root = jsonBuffer.parseObject(json);
-      String mode = root["mode"];
-      String position = root["position"];
-      if (mode == "s") {
-        position = mode;
+
+      if (!root.success()) {
+
+#ifdef DEBUG
+  Serial.println("parseObject() failed");
+#endif
+
       }
-      iotCore.setApplicationParam(POSITION_PARAM, position);
+      else {
+        String mode = root["mode"];
+        String position = root["position"];
+        if (mode == "s") {
+          position = mode;
+        }
+        iotCore.setApplicationParam(POSITION_PARAM, position);
+      }
+
       lastRefreshChangeAt = millis();
     }
     http.end();
