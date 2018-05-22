@@ -10,8 +10,8 @@ The application exposes the following endpoints:
 - /healthcheck (GET) - returns an empty body with http status 200
 - /vessel (POST) - creates a new Vessel record, using form parameters 'id' and 'name'
 - /fleet/list (GET) - returns a JSON list of vessels, each with an id and name
-- /slack (GET) - returns a Slack-digestible version of /fleet/list
 - /position/${id} (GET) - returns the current position of the specified vessel
+- /slack/position/${id} (GET) - returns a Slack-digestible version of /position (omitting the id parameter returns all vessels)
 - /export/${id}/${raceNo} (GET) - returns a CSV file of all the positions logged for the vessel for a particular race
 
 Note that the /vessel endpoint is **not** exposed to the outside world on my web server.
@@ -20,7 +20,8 @@ Note that the /vessel endpoint is **not** exposed to the outside world on my web
 
 You will need Java 8 and MongoDB 3 installed. Build the code using gradlew (Unix/Linux/OS X) or gradlew.bat (Windows)
 
-Run the built JAR file: `java -jar build/libs/racetracker-0.0.1-SNAPSHOT.jar`
+Run the built JAR file:
+> `java -jar build/libs/racetracker-0.0.1-SNAPSHOT.jar`
 
 By default the application will connect to MongoDB on port 27017 and create its collections under a schema called 'test'.
 To change this, explicitly configure the database connection uri:
@@ -57,7 +58,9 @@ This caters for the situation where the position update for one or more vessels 
 
 # Clipper Race Tracker Slack Plugin
 
-The SlackController and associated classes (eg SlackService, SlackResponse etc) have been developed to support a slack plugin.
+The SlackController and associated classes (eg SlackService, SlackResponse etc) have been developed to support a slack plugin. The plugin uses '/clipper-position'.
+- Supplying the vessel's name (or a unique part-name) or number (e.g. 'cv26') will display information about that vessel.
+- If you don't specify a boat then the current positions of all the vessels.
 
 Before my instance of the slack plugin can be made available to the public I need to add SSL support to the surfsoftconsulting.com web server.
 
