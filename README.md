@@ -10,8 +10,11 @@ The application exposes the following endpoints:
 - /healthcheck (GET) - returns an empty body with http status 200
 - /vessel (POST) - creates a new Vessel record, using form parameters 'id' and 'name'
 - /fleet/list (GET) - returns a JSON list of vessels, each with an id and name
+- /slack (GET) - returns a Slack-digestible version of /fleet/list
 - /position/${id} (GET) - returns the current position of the specified vessel
 - /export/${id}/${raceNo} (GET) - returns a CSV file of all the positions logged for the vessel for a particular race
+
+Note that the /vessel endpoint is **not** exposed to the outside world on my web server.
 
 ## Use of this service
 
