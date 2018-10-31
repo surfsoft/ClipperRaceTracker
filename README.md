@@ -1,6 +1,6 @@
 # Clipper Race Tracker
 
-A Java service that scrapes data the cliiperroundtheworld.com race tracker and stores it for use
+A Java service that scrapes data the clipperroundtheworld.com race tracker and stores it for use
 
 The source for the data is the web page https://clipperroundtheworld.com/race/standings - the race standings table and parts of the JavaScript (that contain speed and heading) are parsed.
 
@@ -16,7 +16,7 @@ The application exposes the following endpoints:
 
 Note that the /vessel endpoint is **not** exposed to the outside world on my web server.
 
-## Use of this service
+## Running this service
 
 You will need Java 8 and MongoDB 3 installed. Build the code using gradlew (Unix/Linux/OS X) or gradlew.bat (Windows)
 
@@ -66,15 +66,5 @@ Before my instance of the slack plugin can be made available to the public I nee
 
 # Clipper Race Tracker Client
 
-This is an ESP8266 connected to an AdaFruit NeoPixel 8x8 matrix.
-It uses the service above to display the current race position of your selected boat.
-
-I can, on request, supply a kit comprising a pre-flashed ESP8266 together with a NeoPixel 8x8 matrix and connecting wires.
-You'll need to assemble these items, (instructions provided) and connect a USB 3 power supply (not provided).
-Optionally you can add a case and/or a LiPo battery for mains-free use (the USB charger charges the LiPo when both are plugged in).
-
-Once it is all powered up all you have to do is configure it:
-- Connect it to your local WiFi
-- Choose your boat on the configuration page
-
-And that's it. The display updates regularly from the web and its configuration is preserved when turned off.
+This is an ESP8266 IoT controller connected to an AdaFruit NeoPixel 8x8 matrix.
+It uses the service above to display the current race position of a selected boat.
