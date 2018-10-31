@@ -68,3 +68,7 @@ Before my instance of the slack plugin can be made available to the public I nee
 
 This is an ESP8266 IoT controller connected to an AdaFruit NeoPixel 8x8 matrix.
 It uses the service above to display the current race position of a selected boat.
+
+# Race tracker data
+
+Now that the 18/18 race is over I've added vessel-1718.json.zip to the project. This is all the data collected from early on in leg 3 through to the end of the race, exported from MongoDB.
