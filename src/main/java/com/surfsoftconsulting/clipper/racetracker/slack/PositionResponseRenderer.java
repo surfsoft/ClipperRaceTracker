@@ -28,6 +28,12 @@ import static java.lang.String.format;
 @Component
 public class PositionResponseRenderer {
 
+    private final PositionRenderer positionRenderer;
+
+    public PositionResponseRenderer(PositionRenderer positionRenderer) {
+        this.positionRenderer = positionRenderer;
+    }
+
     public String render(Vessel vessel) {
 
         final String response;
@@ -35,55 +41,24 @@ public class PositionResponseRenderer {
             response = "It looks like the Clipper Round the World race hasn't started yet (or at least nobody has told me about it if it has)";
         }
         else {
-            response = createVesselResponse(vessel.getName(), vessel.getLatestRace().get());
+            Race race = vessel.getLatestRace().get();
+            String name = vessel.getName();
+            Position position = race.getLatestPosition();
+            LocalDateTime finishTime = race.getFinishTime();
+
+            if (finishTime != null) {
+                response = format("%s has finished race %s in %s place", name, race.getRaceNo(), positionRenderer.toPosition(position.getPosition()));
+            }
+            else if (position.isInStealthMode()) {
+                response = format("%s is in stealth mode", name);
+            }
+            else {
+                response = format("%s is in %s place", name, positionRenderer.toPosition(position.getPosition()));
+            }
+
         }
 
         return response;
-
-    }
-
-    private String createVesselResponse(String name, Race race) {
-
-        Position position = race.getLatestPosition();
-        LocalDateTime finishTime = race.getFinishTime();
-
-        final String response;
-        if (finishTime != null) {
-            response = format("%s has finished race %s in %s place", name, race.getRaceNo(), toPosition(position.getPosition()));
-        }
-        else if (position.isInStealthMode()) {
-            response = format("%s is in stealth mode", name);
-        }
-        else {
-            response = format("%s is in %s place", name, toPosition(position.getPosition()));
-        }
-
-        return response;
-
-    }
-
-    private String toPosition(int position) {
-
-        final String suffix;
-        switch(position) {
-            case 1:
-                suffix = "st";
-                break;
-
-            case 2:
-                suffix = "nd";
-                break;
-
-            case 3:
-                suffix = "rd";
-                break;
-
-            default:
-                suffix = "th";
-                break;
-        }
-
-        return format("%s%s", position, suffix);
 
     }
 

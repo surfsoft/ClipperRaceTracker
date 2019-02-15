@@ -60,6 +60,24 @@ class RaceStandingsDataTest {
             "    <td class=\"hide_mob\">126NM</td>" +
             "    <td class=\"hide_mob\">05 October 2017 12.05 (UTC)</td>" +
             "    <td class=\"hide_port_mob\">racing</td>" +
+            "    <td class=\"hide_tab hide_mob\"><span>04 October 2017 11.02 (UTC)</span></td>" +
+            "</tr></table></body></html>";
+
+    private static final String FIFTH_PLACE_HTML =
+            "<html><body><table><tr>" +
+            "    <td class=\"min20 marker\"><span class=\"posflag\"><span class=\"colour\" style=\"background-color: #ed1968\"></span><span class=\"num\"><span>5</span></span></span></td>" +
+            "    <td>" +
+            "        <a href=\"http://clipperroundtheworld.com/team/liverpool-2018\" class=\"cell-inner team-name\" rel=\"noreferrer\">" +
+            "            Liverpool 2018" +
+            "        </a>" +
+            "    </td>" +
+            "    <td class=\"hide_tab hide_mob\">-36.25152</td>" +
+            "    <td class=\"hide_tab  hide_mob\">-50.83488</td>" +
+            "    <td>3329.46NM</td>" +
+            "    <td class=\"hide_mob\"><span class=\"nada\">0.5NM</span></td>" +
+            "    <td class=\"hide_mob\">126NM</td>" +
+            "    <td class=\"hide_mob\"></td>" +
+            "    <td class=\"hide_port_mob\">racing</td>" +
             "    <td class=\"hide_tab hide_mob\"><span class=\"nada\"></span></td>" +
             "</tr></table></body></html>";
 
@@ -83,6 +101,7 @@ class RaceStandingsDataTest {
 
     private final RaceStandingsData firstPlace = new RaceStandingsData(Jsoup.parse(FIRST_PLACE_HTML).body().getElementsByTag("tr").first());
     private final RaceStandingsData fourthPlace = new RaceStandingsData(Jsoup.parse(FOURTH_PLACE_HTML).body().getElementsByTag("tr").first());
+    private final RaceStandingsData fifthPlace = new RaceStandingsData(Jsoup.parse(FIFTH_PLACE_HTML).body().getElementsByTag("tr").first());
     private final RaceStandingsData stealthMode = new RaceStandingsData(Jsoup.parse(STEALTH_MODE_HTML).body().getElementsByTag("tr").first());
 
     @Test
@@ -156,8 +175,23 @@ class RaceStandingsDataTest {
     }
 
     @Test
+    void getTimestampWhenBlank() {
+        assertThat(fifthPlace.getTimestamp(), is(nullValue()));
+    }
+
+    @Test
     void getTimestampInStealthMode() {
         assertThat(stealthMode.getTimestamp(), is(LocalDateTime.of(2017, 10, 16, 5, 59, 0)));
+    }
+
+    @Test
+    void getFinishTime() {
+        assertThat(fourthPlace.getFinishTime(), is(LocalDateTime.of(2017, 10, 4, 11, 2, 0)));
+    }
+
+    @Test
+    void getFinishTimeWhenBlank() {
+        assertThat(fifthPlace.getFinishTime(), is(nullValue()));
     }
 
     @Test

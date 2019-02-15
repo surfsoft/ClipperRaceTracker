@@ -22,7 +22,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ExportedPositionResponseFactory {
 
-    public ExportedPositionResponse toExportedPositionResponse(Position position) {
+    ExportedPositionResponse toExportedPositionResponse(Position position) {
         return new ExportedPositionResponse(position.getTimestamp(),
                 position.getPosition(),
                 position.getCoordinates() != null ? position.getCoordinates().getLatitude() : null,
