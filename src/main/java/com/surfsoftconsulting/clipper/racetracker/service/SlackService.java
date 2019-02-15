@@ -16,17 +16,19 @@ package com.surfsoftconsulting.clipper.racetracker.service;
  * limitations under the License.
  */
 
+import com.surfsoftconsulting.clipper.racetracker.domain.Vessel;
 import com.surfsoftconsulting.clipper.racetracker.domain.VesselResolver;
 import com.surfsoftconsulting.clipper.racetracker.rest.SlackResponse;
 import com.surfsoftconsulting.clipper.racetracker.rest.SlackResponseFactory;
 import com.surfsoftconsulting.clipper.racetracker.slack.PositionResponseRenderer;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Component
 public class SlackService {
@@ -45,14 +47,15 @@ public class SlackService {
 
     public SlackResponse getRaceUpdate(String text) {
 
-        if (StringUtils.isBlank(text)) {
+        Optional<Vessel> vessel = Optional.ofNullable(isBlank(text) ? null : vesselResolver.resolve(text.trim().toLowerCase()));
+        if (vessel.isPresent()) {
+            return slackResponseFactory.toSlackResponse(positionResponseRenderer.render(vessel.get()));
+        }
+        else {
             int currentRace = raceService.getCurrentRace();
             String raceHeadline = format("Positions in race %s of the Clipper Round the World Race are:", currentRace);
             List<String> vessels = raceService.getRacePositions(currentRace).stream().map(v -> String.format("%s: %s (%s)", v.getPosition(currentRace), v.getName(), v.getStatus(currentRace))).collect(toList());
             return slackResponseFactory.toSlackResponse(raceHeadline, vessels);
-        }
-        else {
-            return slackResponseFactory.toSlackResponse(positionResponseRenderer.render(vesselResolver.resolve(text.trim().toLowerCase())));
         }
 
     }

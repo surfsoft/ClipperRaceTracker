@@ -37,6 +37,7 @@ class SlackServiceTest {
     private static final String POSITION_RESPONSE = "Somewhere in the mid-atlantic";
     private static final String FLEET_HEADLINE = "Positions in race 2 of the Clipper Round the World Race are:";
     private static final int CURRENT_RACE_NO = 2;
+    private static final String UNRESOLVABLE_VESSEL = "CV24";
 
     private final VesselResolver vesselResolver = mock(VesselResolver.class);
     private final PositionResponseRenderer positionResponseRenderer = mock(PositionResponseRenderer.class);
@@ -49,7 +50,7 @@ class SlackServiceTest {
     private final Vessel vessel2 = mockVessel(2, "Unicef", "racing");
 
     @Test
-    void raceUpdateAllVessels() {
+    void raceUpdateEmptyString() {
 
         when(raceService.getCurrentRace()).thenReturn(CURRENT_RACE_NO);
         when(raceService.getRacePositions(CURRENT_RACE_NO)).thenReturn(asList(vessel1, vessel2));
@@ -57,6 +58,31 @@ class SlackServiceTest {
         when(slackResponseFactory.toSlackResponse(eq(FLEET_HEADLINE), anyList())).thenReturn(slackResponse);
 
         assertThat(underTest.getRaceUpdate(""), is(slackResponse));
+
+    }
+
+    @Test
+    void raceUpdateNullString() {
+
+        when(raceService.getCurrentRace()).thenReturn(CURRENT_RACE_NO);
+        when(raceService.getRacePositions(CURRENT_RACE_NO)).thenReturn(asList(vessel1, vessel2));
+        SlackResponse slackResponse = mock(SlackResponse.class);
+        when(slackResponseFactory.toSlackResponse(eq(FLEET_HEADLINE), anyList())).thenReturn(slackResponse);
+
+        assertThat(underTest.getRaceUpdate(null), is(slackResponse));
+
+    }
+
+    @Test
+    void raceUpdateUnresolvableVessel() {
+
+        when(vesselResolver.resolve(UNRESOLVABLE_VESSEL)).thenReturn(null);
+        when(raceService.getCurrentRace()).thenReturn(CURRENT_RACE_NO);
+        when(raceService.getRacePositions(CURRENT_RACE_NO)).thenReturn(asList(vessel1, vessel2));
+        SlackResponse slackResponse = mock(SlackResponse.class);
+        when(slackResponseFactory.toSlackResponse(eq(FLEET_HEADLINE), anyList())).thenReturn(slackResponse);
+
+        assertThat(underTest.getRaceUpdate(UNRESOLVABLE_VESSEL), is(slackResponse));
 
     }
 
