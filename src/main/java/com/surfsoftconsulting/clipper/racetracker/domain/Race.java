@@ -78,11 +78,6 @@ public class Race {
                 .orElse(new Position());
     }
 
-    @JsonIgnore
-    public void addPosition(Position position) {
-
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

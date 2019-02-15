@@ -22,8 +22,27 @@ import org.springframework.stereotype.Component;
 @Component
 public class RaceStandingsDataFactory {
 
+    private final TableRowParser tableRowParser;
+
+    public RaceStandingsDataFactory(TableRowParser tableRowParser) {
+        this.tableRowParser = tableRowParser;
+    }
+
     RaceStandingsData fromTableRow(Element element) {
-        return new RaceStandingsData(element);
+
+        return new RaceStandingsData(
+                tableRowParser.getPosition(element),
+                tableRowParser.getName(element),
+                tableRowParser.getLatitude(element),
+                tableRowParser.getLongitude(element),
+                tableRowParser.getDistanceRemaining(element),
+                tableRowParser.getDistanceToLeadVessel(element),
+                tableRowParser.getDistanceTravelled(element),
+                tableRowParser.getTimestamp(element),
+                tableRowParser.getStatus(element),
+                tableRowParser.getFinishTime(element),
+                tableRowParser.isInStealthMode(element));
+
     }
 
 }

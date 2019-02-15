@@ -43,16 +43,16 @@ public class ExportedPositionResponse {
 
     private String status;
 
-    public ExportedPositionResponse(LocalDateTime timestamp,
-                                    int position,
-                                    Double latitude,
-                                    Double longitude,
-                                    Double speed,
-                                    Integer heading,
-                                    Double distanceRemaining,
-                                    Double distanceToLeadVessel,
-                                    Double distanceTravelled,
-                                    String status) {
+    ExportedPositionResponse(LocalDateTime timestamp,
+                             int position,
+                             Double latitude,
+                             Double longitude,
+                             Double speed,
+                             Integer heading,
+                             Double distanceRemaining,
+                             Double distanceToLeadVessel,
+                             Double distanceTravelled,
+                             String status) {
 
         this.timestamp = timestamp;
         this.position = position;

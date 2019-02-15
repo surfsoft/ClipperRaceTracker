@@ -16,122 +16,82 @@ package com.surfsoftconsulting.clipper.racetracker.web;
  * limitations under the License.
  */
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.jsoup.nodes.Element;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 public class RaceStandingsData {
 
-    private static final DateTimeFormatter TIMESTAMP_PARSER = DateTimeFormatter.ofPattern("dd MMMM yyyy H.m");
+    private final Integer position;
+    private final String name;
+    private final Double latitude;
+    private final Double longitude;
+    private final Double distanceRemaining;
+    private final Double distanceToLeadVessel;
+    private final Double distanceTravelled;
+    private final LocalDateTime timestamp;
+    private final String status;
+    private final LocalDateTime finishTime;
+    private final boolean stealthMode;
 
-    private final Element tableRow;
-
-    RaceStandingsData(Element tableRow) {
-        this.tableRow = tableRow;
+    public RaceStandingsData(Integer position, String name, Double latitude, Double longitude, Double distanceRemaining, Double distanceToLeadVessel, Double distanceTravelled, LocalDateTime timestamp, String status, LocalDateTime finishTime, boolean stealthMode) {
+        this.position = position;
+        this.name = name;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.distanceRemaining = distanceRemaining;
+        this.distanceToLeadVessel = distanceToLeadVessel;
+        this.distanceTravelled = distanceTravelled;
+        this.timestamp = timestamp;
+        this.status = status;
+        this.finishTime = finishTime;
+        this.stealthMode = stealthMode;
     }
 
     public Integer getPosition() {
-        String positionString = tableRow.getElementsByTag("td").get(0).getElementsByClass("num").text().trim();
-        if (positionString.equals("-")) {
-            return 99; // Stealth mode, this is a hack for now
-        }
-        else {
-            return Integer.valueOf(positionString);
-        }
+        return position;
     }
 
     public String getName() {
-        return tableRow.getElementsByTag("td").get(1).getElementsByTag("a").text().trim();
+        return name;
     }
 
     public Double getLatitude() {
-        if (isInStealthMode()) {
-            return null;
-        }
-        else {
-            return Double.parseDouble(tableRow.getElementsByTag("td").get(2).text().trim());
-        }
+        return latitude;
     }
 
     public Double getLongitude() {
-        if (isInStealthMode()) {
-            return null;
-        }
-        else {
-            return Double.parseDouble(tableRow.getElementsByTag("td").get(3).text().trim());
-        }
+        return longitude;
     }
 
     public Double getDistanceRemaining() {
-        if (isInStealthMode()) {
-            return null;
-        }
-        else {
-            return parseNauticalMiles(tableRow.getElementsByTag("td").get(4).text().trim());
-        }
+        return distanceRemaining;
     }
 
     public Double getDistanceToLeadVessel() {
-        if (isInStealthMode()) {
-            return null;
-        }
-        else {
-            if (getPosition() == 1 || isInStealthMode()) {
-                return null;
-            } else {
-                return parseNauticalMiles(tableRow.getElementsByTag("td").get(5).text().trim());
-            }
-        }
+        return distanceToLeadVessel;
     }
 
     public Double getDistanceTravelled() {
-        if (isInStealthMode()) {
-            return null;
-        }
-        else {
-            return parseNauticalMiles(tableRow.getElementsByTag("td").get(6).text().trim());
-        }
+        return distanceTravelled;
     }
 
     public LocalDateTime getTimestamp() {
-        String timestampString = tableRow.getElementsByTag("td").get(7).text().trim();
-        if (isInStealthMode()) {
-            String untilString = timestampString.substring(timestampString.toLowerCase().indexOf("until:") + 7);
-            return LocalDateTime.parse(untilString, TIMESTAMP_PARSER);
-        }
-        else {
-            if (StringUtils.isBlank(timestampString)) {
-                return null;
-            } else {
-                return LocalDateTime.parse(timestampString.substring(0, timestampString.length() - 6), TIMESTAMP_PARSER);
-            }
-        }
+        return timestamp;
     }
 
     public String getStatus() {
-        return tableRow.getElementsByTag("td").get(8).text().trim();
+        return status;
     }
 
     public LocalDateTime getFinishTime() {
-        String finishTimeString = tableRow.getElementsByTag("td").get(9).text().trim();
-        if (StringUtils.isBlank(finishTimeString)) {
-            return null;
-        }
-        else {
-            return LocalDateTime.parse(finishTimeString.substring(0, finishTimeString.length() - 6), TIMESTAMP_PARSER);
-        }
+        return finishTime;
     }
 
     public boolean isInStealthMode() {
-        return tableRow.hasClass("stealthrow");
-    }
-
-    private Double parseNauticalMiles(String nauticalMiles) {
-        return Double.valueOf(nauticalMiles.substring(0, nauticalMiles.length() - 2));
+        return stealthMode;
     }
 
     @Override
@@ -143,15 +103,52 @@ public class RaceStandingsData {
         RaceStandingsData that = (RaceStandingsData) o;
 
         return new EqualsBuilder()
-                .append(tableRow, that.tableRow)
+                .append(stealthMode, that.stealthMode)
+                .append(position, that.position)
+                .append(name, that.name)
+                .append(latitude, that.latitude)
+                .append(longitude, that.longitude)
+                .append(distanceRemaining, that.distanceRemaining)
+                .append(distanceToLeadVessel, that.distanceToLeadVessel)
+                .append(distanceTravelled, that.distanceTravelled)
+                .append(timestamp, that.timestamp)
+                .append(status, that.status)
+                .append(finishTime, that.finishTime)
                 .isEquals();
     }
 
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
-                .append(tableRow)
+                .append(position)
+                .append(name)
+                .append(latitude)
+                .append(longitude)
+                .append(distanceRemaining)
+                .append(distanceToLeadVessel)
+                .append(distanceTravelled)
+                .append(timestamp)
+                .append(status)
+                .append(finishTime)
+                .append(stealthMode)
                 .toHashCode();
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("position", position)
+                .append("name", name)
+                .append("latitude", latitude)
+                .append("longitude", longitude)
+                .append("distanceRemaining", distanceRemaining)
+                .append("distanceToLeadVessel", distanceToLeadVessel)
+                .append("distanceTravelled", distanceTravelled)
+                .append("timestamp", timestamp)
+                .append("status", status)
+                .append("finishTime", finishTime)
+                .append("stealthMode", stealthMode)
+                .toString();
     }
 
 }

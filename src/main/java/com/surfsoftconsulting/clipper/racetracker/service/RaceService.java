@@ -35,7 +35,7 @@ public class RaceService {
         this.vesselRepository = vesselRepository;
     }
 
-    public int getCurrentRace() {
+    int getCurrentRace() {
 
         return vesselRepository
                 .findAll()

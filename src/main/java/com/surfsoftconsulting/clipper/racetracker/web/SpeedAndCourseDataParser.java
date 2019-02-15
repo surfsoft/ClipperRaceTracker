@@ -18,6 +18,7 @@ package com.surfsoftconsulting.clipper.racetracker.web;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +39,12 @@ public class SpeedAndCourseDataParser {
     private static final String PREFIX = "content: \"";
     private static final String SUFFIX = "\"";
 
+    private final SpeedAndCourseDataFactory speedAndCourseDataFactory;
+
+    public SpeedAndCourseDataParser(SpeedAndCourseDataFactory speedAndCourseDataFactory) {
+        this.speedAndCourseDataFactory = speedAndCourseDataFactory;
+    }
+
     public List<SpeedAndCourseData> parse(Document raceStandingsPage) {
 
         // Find the correct script tag
@@ -57,7 +64,9 @@ public class SpeedAndCourseDataParser {
                         String javaScript = s.trim();
                         String html = format("<html><body><div id=\"infoPanel\">%s</div></body></html>", javaScript.substring(PREFIX.length(), javaScript.length() - SUFFIX.length()).replace("\\", ""));
                         Document document = Jsoup.parse(html);
-                        return new SpeedAndCourseData(document.body().getElementById("infoPanel"));
+
+                        Element infoPanel = document.body().getElementById("infoPanel");
+                        return new SpeedAndCourseData(speedAndCourseDataFactory.getName(infoPanel), speedAndCourseDataFactory.getSpeed(infoPanel), speedAndCourseDataFactory.getHeading(infoPanel));
                     })
                     .collect(toList());
         }

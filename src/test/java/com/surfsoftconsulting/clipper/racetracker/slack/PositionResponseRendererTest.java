@@ -53,7 +53,7 @@ class PositionResponseRendererTest {
     @Test
     void notFinished() {
 
-        Vessel vessel = mockVessel("CV26", null, false);
+        Vessel vessel = mockVessel(null, false);
 
         assertThat(underTest.render(vessel), is("CV26 is in 1st place"));
 
@@ -63,7 +63,7 @@ class PositionResponseRendererTest {
     void finished() {
 
         LocalDateTime finishTime = LocalDateTime.of(2017, 10, 4, 11, 29, 0);
-        Vessel vessel = mockVessel("CV26", finishTime, false);
+        Vessel vessel = mockVessel(finishTime, false);
 
         assertThat(underTest.render(vessel), is("CV26 has finished race 2 in 1st place"));
 
@@ -72,13 +72,13 @@ class PositionResponseRendererTest {
     @Test
     void stealthMode() {
 
-        Vessel vessel = mockVessel("CV26", null, true);
+        Vessel vessel = mockVessel(null, true);
 
         assertThat(underTest.render(vessel), is("CV26 is in stealth mode"));
 
     }
 
-    private Vessel mockVessel(String name, LocalDateTime finishTime, boolean stealthMode) {
+    private Vessel mockVessel(LocalDateTime finishTime, boolean stealthMode) {
 
         Position position = mock(Position.class);
         when(position.getPosition()).thenReturn(1);
@@ -90,7 +90,7 @@ class PositionResponseRendererTest {
         when(race.getFinishTime()).thenReturn(finishTime);
 
         Vessel vessel = mock(Vessel.class);
-        when(vessel.getName()).thenReturn(name);
+        when(vessel.getName()).thenReturn("CV26");
         when(vessel.hasNotStarted()).thenReturn(false);
         when(vessel.getLatestRace()).thenReturn(Optional.of(race));
 

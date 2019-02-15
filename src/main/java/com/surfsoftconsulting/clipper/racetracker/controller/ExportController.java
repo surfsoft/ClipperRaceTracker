@@ -16,6 +16,7 @@ package com.surfsoftconsulting.clipper.racetracker.controller;
  * limitations under the License.
  */
 
+import com.surfsoftconsulting.clipper.racetracker.rest.ExportedPositionResponse;
 import com.surfsoftconsulting.clipper.racetracker.rest.ResponseRenderer;
 import com.surfsoftconsulting.clipper.racetracker.service.VesselService;
 import org.slf4j.Logger;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
@@ -39,9 +41,9 @@ public class ExportController {
     private static final String FAILED_TO_GET_RESPONSE_WRITER = "Failed to get response writer";
 
     private final VesselService vesselService;
-    private final ResponseRenderer csvResponseRenderer;
+    private final ResponseRenderer<List<ExportedPositionResponse>> csvResponseRenderer;
 
-    public ExportController(VesselService vesselService, ResponseRenderer csvResponseRenderer) {
+    public ExportController(VesselService vesselService, ResponseRenderer<List<ExportedPositionResponse>> csvResponseRenderer) {
         this.vesselService = vesselService;
         this.csvResponseRenderer = csvResponseRenderer;
     }

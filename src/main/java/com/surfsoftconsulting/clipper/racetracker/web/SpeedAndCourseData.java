@@ -16,48 +16,28 @@ package com.surfsoftconsulting.clipper.racetracker.web;
  * limitations under the License.
  */
 
-import org.apache.commons.lang3.StringUtils;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-
 public class SpeedAndCourseData {
 
-    private final Element infoPanelDiv;
+    private final String name;
+    private final Double speed;
+    private final Integer heading;
 
-    public SpeedAndCourseData(Element infoPanelDiv) {
-        this.infoPanelDiv = infoPanelDiv;
+    public SpeedAndCourseData(String name, Double speed, Integer heading) {
+        this.name = name;
+        this.speed = speed;
+        this.heading = heading;
     }
 
     public String getName() {
-        return infoPanelDiv.getElementsByTag("h3").get(0).text().trim();
+        return name;
     }
 
     public Double getSpeed() {
-        String sog = getDivValue("SOG").substring(0, getDivValue("SOG").length() - 2);
-        return StringUtils.isBlank(sog) ? null : Double.valueOf(sog);
+        return speed;
     }
 
     public Integer getHeading() {
-        String cog = getDivValue("COG");
-        return StringUtils.isBlank(cog) ? null : Integer.valueOf(cog);
-    }
-
-    private String getDivValue(String label) {
-
-        String value = null;
-
-        Elements divs = infoPanelDiv.getElementsByTag("div");
-        for (int index = 0; index < divs.size() && value == null; index++) {
-            if (!divs.get(index).hasClass("markerInfo")) {
-                Elements cells = divs.get(index).getElementsByTag("span");
-                if (cells.get(0).text().trim().equalsIgnoreCase(label) && cells.size() >= 2) {
-                    value = cells.get(1).text().trim();
-                }
-            }
-        }
-
-        return value;
-
+        return heading;
     }
 
 }

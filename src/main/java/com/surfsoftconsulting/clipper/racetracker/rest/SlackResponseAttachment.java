@@ -22,7 +22,7 @@ public class SlackResponseAttachment {
 
     private final String text;
 
-    public SlackResponseAttachment(String text) {
+    SlackResponseAttachment(String text) {
         this.text = text;
     }
 

@@ -36,7 +36,7 @@ public class RaceStandingsDataParser {
 
         List<RaceStandingsData> raceStandingsData = new ArrayList<>();
 
-        // TODO assumes that the first row is the headings, and that all the oother rows are teams
+        // Note: the first row is the table headings, remaining rows are team standings
         Elements standingsRows = raceStandingsPage.body().getElementById("currentstandings").getElementsByTag("tr");
         for (int index = 1; index < standingsRows.size(); index++) {
             raceStandingsData.add(raceStandingsDataFactory.fromTableRow(standingsRows.get(index)));

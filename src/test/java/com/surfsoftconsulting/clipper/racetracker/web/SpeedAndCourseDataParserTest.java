@@ -61,8 +61,7 @@ class SpeedAndCourseDataParserTest {
             "    <div><span>Updated</span><span>44 mins ago</span>" +
             "</div><div><img src=\"/inc/img/logo35_small.png\"></div></div>\"\n";
 
-
-    private final SpeedAndCourseDataParser underTest = new SpeedAndCourseDataParser();
+    private final SpeedAndCourseDataParser underTest = new SpeedAndCourseDataParser(new SpeedAndCourseDataFactory());
 
     @Test
     void parse() {

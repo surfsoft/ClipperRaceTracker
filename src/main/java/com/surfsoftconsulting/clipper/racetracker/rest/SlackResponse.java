@@ -25,7 +25,7 @@ public class SlackResponse {
     private final String text;
     private final List<SlackResponseAttachment> attachments;
 
-    public SlackResponse(String responseType, String text, List<SlackResponseAttachment> attachments) {
+    SlackResponse(String responseType, String text, List<SlackResponseAttachment> attachments) {
         this.responseType = responseType;
         this.text = text;
         this.attachments = attachments;
