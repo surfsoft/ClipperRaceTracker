@@ -42,12 +42,14 @@ public class Position {
 
     private String status;
 
+    private LocalDateTime finishTimestamp;
+
     private boolean inStealthMode;
 
     public Position() {
     }
 
-    Position(int position, Coordinates coordinates, Double speed, Integer heading, Double distanceRemaining, Double distanceToLeadVessel, Double distanceTravelled, LocalDateTime timestamp, String status, LocalDateTime finishTime, boolean inStealthMode) {
+    Position(int position, Coordinates coordinates, Double speed, Integer heading, Double distanceRemaining, Double distanceToLeadVessel, Double distanceTravelled, LocalDateTime timestamp, String status, LocalDateTime finishTimestamp, boolean inStealthMode) {
         this.position = position;
         this.coordinates = coordinates;
         this.speed = speed;
@@ -57,6 +59,7 @@ public class Position {
         this.distanceTravelled = distanceTravelled;
         this.timestamp = timestamp;
         this.status = status;
+        this.finishTimestamp = finishTimestamp;
         this.inStealthMode = inStealthMode;
     }
 
@@ -130,6 +133,14 @@ public class Position {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public LocalDateTime getFinishTimestamp() {
+        return finishTimestamp;
+    }
+
+    public void setFinishTimestamp(LocalDateTime finishTimestamp) {
+        this.finishTimestamp = finishTimestamp;
     }
 
     public boolean isInStealthMode() {

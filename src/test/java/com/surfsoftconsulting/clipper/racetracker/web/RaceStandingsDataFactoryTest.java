@@ -68,7 +68,7 @@ class RaceStandingsDataFactoryTest {
         assertThat(raceStandingsData.getDistanceTravelled(), is(DISTANCE_TRAVELLED));
         assertThat(raceStandingsData.getTimestamp(), is(TIMESTAMP));
         assertThat(raceStandingsData.getStatus(), is(STATUS));
-        assertThat(raceStandingsData.getFinishTime(), is(FINISH_TIMESTAMP));
+        assertThat(raceStandingsData.getFinishTimestamp(), is(FINISH_TIMESTAMP));
         assertThat(raceStandingsData.isInStealthMode(), is(STEALTH_MODE));
 
     }

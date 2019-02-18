@@ -51,7 +51,7 @@ class PositionFactoryTest {
 
         when(raceStandingsData.isInStealthMode()).thenReturn(false);
         when(raceStandingsData.getTimestamp()).thenReturn(TIMESTAMP);
-        when(raceStandingsData.getFinishTime()).thenReturn(null);
+        when(raceStandingsData.getFinishTimestamp()).thenReturn(null);
         when(raceStandingsData.getPosition()).thenReturn(POSITION);
         when(raceStandingsData.getLatitude()).thenReturn(LATITUDE);
         when(raceStandingsData.getLongitude()).thenReturn(LONGITUDE);
@@ -59,6 +59,7 @@ class PositionFactoryTest {
         when(raceStandingsData.getDistanceToLeadVessel()).thenReturn(DISTANCE_TO_LEAD_VESSEL);
         when(raceStandingsData.getDistanceTravelled()).thenReturn(DISTANCE_TRAVELLED);
         when(raceStandingsData.getStatus()).thenReturn(STATUS);
+        when(raceStandingsData.getFinishTimestamp()).thenReturn(null);
         when(speedAndCourseData.getSpeed()).thenReturn(SPEED);
         when(speedAndCourseData.getHeading()).thenReturn(HEADING);
 
@@ -72,6 +73,7 @@ class PositionFactoryTest {
         assertThat(position.getDistanceToLeadVessel(), is(DISTANCE_TO_LEAD_VESSEL));
         assertThat(position.getDistanceTravelled(), is(DISTANCE_TRAVELLED));
         assertThat(position.getTimestamp(), is(TIMESTAMP));
+        assertThat(position.getFinishTimestamp(), is(nullValue()));
         assertThat(position.getStatus(), is(STATUS));
         assertThat(position.isInStealthMode(), is(false));
 
@@ -82,7 +84,7 @@ class PositionFactoryTest {
 
         when(raceStandingsData.isInStealthMode()).thenReturn(false);
         when(raceStandingsData.getTimestamp()).thenReturn(TIMESTAMP);
-        when(raceStandingsData.getFinishTime()).thenReturn(null);
+        when(raceStandingsData.getFinishTimestamp()).thenReturn(null);
         when(raceStandingsData.getPosition()).thenReturn(POSITION);
         when(raceStandingsData.getLatitude()).thenReturn(LATITUDE);
         when(raceStandingsData.getLongitude()).thenReturn(LONGITUDE);
@@ -101,6 +103,7 @@ class PositionFactoryTest {
         assertThat(position.getDistanceToLeadVessel(), is(DISTANCE_TO_LEAD_VESSEL));
         assertThat(position.getDistanceTravelled(), is(DISTANCE_TRAVELLED));
         assertThat(position.getTimestamp(), is(TIMESTAMP));
+        assertThat(position.getFinishTimestamp(), is(nullValue()));
         assertThat(position.getStatus(), is(STATUS));
         assertThat(position.isInStealthMode(), is(false));
 
@@ -124,6 +127,7 @@ class PositionFactoryTest {
         assertThat(position.getDistanceToLeadVessel(), is(nullValue()));
         assertThat(position.getDistanceTravelled(), is(nullValue()));
         assertThat(position.getTimestamp(), is(TIMESTAMP));
+        assertThat(position.getFinishTimestamp(), is(nullValue()));
         assertThat(position.getStatus(), is(STATUS));
         assertThat(position.isInStealthMode(), is(true));
 
@@ -134,7 +138,7 @@ class PositionFactoryTest {
 
         when(raceStandingsData.isInStealthMode()).thenReturn(false);
         when(raceStandingsData.getTimestamp()).thenReturn(TIMESTAMP);
-        when(raceStandingsData.getFinishTime()).thenReturn(FINISH_TIMESTAMP);
+        when(raceStandingsData.getFinishTimestamp()).thenReturn(FINISH_TIMESTAMP);
         when(raceStandingsData.getPosition()).thenReturn(POSITION);
         when(raceStandingsData.getLatitude()).thenReturn(LATITUDE);
         when(raceStandingsData.getLongitude()).thenReturn(LONGITUDE);
@@ -151,6 +155,7 @@ class PositionFactoryTest {
         assertThat(position.getDistanceToLeadVessel(), is(nullValue()));
         assertThat(position.getDistanceTravelled(), is(DISTANCE_TRAVELLED));
         assertThat(position.getTimestamp(), is(TIMESTAMP));
+        assertThat(position.getFinishTimestamp(), is(FINISH_TIMESTAMP));
         assertThat(position.getStatus(), is(STATUS));
         assertThat(position.isInStealthMode(), is(false));
 

@@ -42,7 +42,7 @@ public class PositionFactory {
 
 
         if (!inStealthMode) {
-            finishTime = row.getFinishTime();
+            finishTime = row.getFinishTimestamp();
             coordinates = new Coordinates(row.getLatitude(), row.getLongitude());
             if (finishTime == null) {
                 if (speedAndCourseData != null) {

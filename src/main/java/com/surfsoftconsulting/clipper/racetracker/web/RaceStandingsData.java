@@ -86,7 +86,7 @@ public class RaceStandingsData {
         return status;
     }
 
-    public LocalDateTime getFinishTime() {
+    public LocalDateTime getFinishTimestamp() {
         return finishTime;
     }
 

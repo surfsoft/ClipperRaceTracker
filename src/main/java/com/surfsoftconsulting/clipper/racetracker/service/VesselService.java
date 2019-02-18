@@ -101,7 +101,7 @@ public class VesselService {
             }
             if (race.get().getFinishTime() == null) {
                 if (raceStandingsData.getTimestamp() == null) {
-                    race.get().setFinishTime(raceStandingsData.getFinishTime());
+                    race.get().setFinishTime(raceStandingsData.getFinishTimestamp());
                     update = true;
                 }
                 else {

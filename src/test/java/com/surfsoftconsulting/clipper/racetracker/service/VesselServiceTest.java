@@ -232,7 +232,7 @@ class VesselServiceTest {
 
         RaceStandingsData raceStandingsData = mock(RaceStandingsData.class);
         when(raceStandingsData.getName()).thenReturn(VESSEL_NAME);
-        when(raceStandingsData.getFinishTime()).thenReturn(NEXT_UPDATE_TIMESTAMP);
+        when(raceStandingsData.getFinishTimestamp()).thenReturn(NEXT_UPDATE_TIMESTAMP);
         Vessel vessel = mock(Vessel.class);
         when(vessel.getId()).thenReturn(VESSEL_ID);
         when(vessel.getName()).thenReturn(VESSEL_NAME);
