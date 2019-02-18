@@ -21,6 +21,7 @@ import com.surfsoftconsulting.clipper.racetracker.domain.Position;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static java.util.Optional.ofNullable;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
@@ -52,7 +53,7 @@ class PositionResponseFactoryTest {
     void notInStealthMode() {
 
         Position position = mockPosition(false);
-        when(mapViewFactory.createMapView(coordinates)).thenReturn(MAP_VIEW);
+        when(mapViewFactory.createMapView(ofNullable(coordinates))).thenReturn(MAP_VIEW);
 
         PositionResponse positionResponse = underTest.toPositionResponse(VESSEL_ID, VESSEL_NAME, position);
 

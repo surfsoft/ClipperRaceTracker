@@ -19,6 +19,10 @@ package com.surfsoftconsulting.clipper.racetracker.rest;
 import com.surfsoftconsulting.clipper.racetracker.domain.Position;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
+import static java.util.Optional.ofNullable;
+
 @Component
 public class PositionResponseFactory {
 
@@ -32,7 +36,7 @@ public class PositionResponseFactory {
 
     public PositionResponse toPositionResponse(String id, String name, Position position) {
         CoordinatesResponse coordinatesResponse = coordinatesResponseFactory.getCoordinatesResponse(position.getCoordinates());
-        String mapView = mapViewFactory.createMapView(position.getCoordinates());
+        String mapView = mapViewFactory.createMapView(ofNullable(position.getCoordinates()));
         return new PositionResponse(id, name, position.getPosition(), position.isInStealthMode() ? "s" : "r", coordinatesResponse, mapView);
     }
 

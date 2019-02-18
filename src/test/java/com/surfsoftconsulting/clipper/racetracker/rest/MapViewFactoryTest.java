@@ -3,6 +3,7 @@ package com.surfsoftconsulting.clipper.racetracker.rest;
 import com.surfsoftconsulting.clipper.racetracker.domain.Coordinates;
 import org.junit.jupiter.api.Test;
 
+import static java.util.Optional.ofNullable;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.nullValue;
@@ -40,13 +41,13 @@ class MapViewFactoryTest {
         when(coordinates.getLatitude()).thenReturn(LATITUDE);
         when(coordinates.getLongitude()).thenReturn(LONGITUDE);
 
-        assertThat(underTest.createMapView(coordinates), is(String.format(MAP_VIEW_URL_TEMPLATE, LATITUDE, LONGITUDE)));
+        assertThat(underTest.createMapView(ofNullable(coordinates)), is(String.format(MAP_VIEW_URL_TEMPLATE, LATITUDE, LONGITUDE)));
 
     }
 
     @Test
     void noCoordinatesPresent() {
-        assertThat(underTest.createMapView(null), is(nullValue()));
+        assertThat(underTest.createMapView(ofNullable(null)), is(nullValue()));
     }
 
 }

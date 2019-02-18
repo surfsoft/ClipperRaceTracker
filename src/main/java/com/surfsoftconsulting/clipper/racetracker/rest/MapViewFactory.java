@@ -19,18 +19,15 @@ package com.surfsoftconsulting.clipper.racetracker.rest;
 import com.surfsoftconsulting.clipper.racetracker.domain.Coordinates;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 public class MapViewFactory {
 
     private static final String MAP_VIEW_URL_TEMPLATE = "https://www.google.com/maps/?q=%s,%s";
 
-    String createMapView(Coordinates coordinates) {
-        if (coordinates == null) {
-            return null;
-        }
-        else {
-            return String.format(MAP_VIEW_URL_TEMPLATE, coordinates.getLatitude(), coordinates.getLongitude());
-        }
+    String createMapView(Optional<Coordinates> coordinates) {
+        return coordinates.map(c -> String.format(MAP_VIEW_URL_TEMPLATE, c.getLatitude(), c.getLongitude())).orElse(null);
     }
 
 }
