@@ -16,6 +16,7 @@ package com.surfsoftconsulting.clipper.racetracker.scheduled;
  * limitations under the License.
  */
 
+import com.surfsoftconsulting.clipper.racetracker.service.RaceService;
 import com.surfsoftconsulting.clipper.racetracker.service.VesselService;
 import com.surfsoftconsulting.clipper.racetracker.web.*;
 import org.jsoup.nodes.Document;
@@ -24,7 +25,8 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static java.util.Arrays.asList;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -39,15 +41,18 @@ class VesselUpdatesPollerTest {
     private final SpeedAndCourseDataParser speedAndCourseDataParser = mock(SpeedAndCourseDataParser.class);
     private final VesselService vesselService = mock(VesselService.class);
     private final RaceNumberParser raceNumberParser = mock(RaceNumberParser.class);
+    private final RaceService raceService = mock(RaceService.class);
 
-    private final VesselUpdatesPoller underTest = new VesselUpdatesPoller(raceStandingsDocumentFactory, raceStandingsDataParser, speedAndCourseDataParser, raceNumberParser, vesselService);
+    private final VesselUpdatesPoller underTest = new VesselUpdatesPoller(raceStandingsDocumentFactory, raceStandingsDataParser, speedAndCourseDataParser, raceNumberParser, raceService, vesselService);
 
     @Test
-    void pollForUpdates() {
+    void raceNotFinished() {
 
         Document raceStandingsDocument = mock(Document.class);
         when(raceNumberParser.parse(raceStandingsDocument)).thenReturn(RACE_NO);
         when(raceStandingsDocumentFactory.fromUrl("https://www.clipperroundtheworld.com/race/standings")).thenReturn(raceStandingsDocument);
+        when(raceService.isFinished(RACE_NO)).thenReturn(false);
+        @SuppressWarnings("unchecked")
         List<SpeedAndCourseData> speedsAndCourses = mock(List.class);
         when(speedAndCourseDataParser.parse(raceStandingsDocument)).thenReturn(speedsAndCourses);
         RaceStandingsData raceStandingsData1 = mock(RaceStandingsData.class);
@@ -58,6 +63,22 @@ class VesselUpdatesPollerTest {
 
         verify(vesselService).updatePosition(RACE_NO, raceStandingsData1, speedsAndCourses);
         verify(vesselService).updatePosition(RACE_NO, raceStandingsData2, speedsAndCourses);
+
+    }
+
+    @Test
+    void raceFinshed() {
+
+        Document raceStandingsDocument = mock(Document.class);
+        when(raceNumberParser.parse(raceStandingsDocument)).thenReturn(RACE_NO);
+        when(raceStandingsDocumentFactory.fromUrl("https://www.clipperroundtheworld.com/race/standings")).thenReturn(raceStandingsDocument);
+        when(raceService.isFinished(RACE_NO)).thenReturn(true);
+
+        underTest.pollForUpdates();
+
+        verify(speedAndCourseDataParser, never()).parse(raceStandingsDocument);
+        verify(raceStandingsDataParser, never()).parse(raceStandingsDocument);
+        verify(vesselService, never()).updatePosition(anyInt(), any(RaceStandingsData.class), any(List.class));
 
     }
 

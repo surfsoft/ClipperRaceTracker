@@ -23,6 +23,7 @@ import com.surfsoftconsulting.clipper.racetracker.domain.VesselRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +38,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class RaceServiceTest {
+
+    private static final int RACE_NO = 2;
 
     private final VesselRepository vesselRepository = mock(VesselRepository.class);
 
@@ -58,6 +61,53 @@ class RaceServiceTest {
     @Test
     void getCurrentRace() {
         assertThat(underTest.getCurrentRace(), is(3));
+    }
+
+    @Test
+    void isFinished() {
+
+        Race vessel1Race = mock(Race.class);
+        when(vessel1Race.isFinished()).thenReturn(true);
+        when(vessel1Race.getFinishTime()).thenReturn(LocalDateTime.now().minusHours(25));
+        when(vessel1.getRace(RACE_NO)).thenReturn(Optional.of(vessel1Race));
+        Race vessel2Race = mock(Race.class);
+        when(vessel2Race.isFinished()).thenReturn(true);
+        when(vessel2Race.getFinishTime()).thenReturn(LocalDateTime.now().minusHours(25));
+        when(vessel2.getRace(RACE_NO)).thenReturn(Optional.of(vessel2Race));
+
+        assertThat(underTest.isFinished(RACE_NO), is(true));
+
+    }
+
+    @Test
+    void oneVesselStillInsideUpdateWindow() {
+
+        Race vessel1Race = mock(Race.class);
+        when(vessel1Race.isFinished()).thenReturn(true);
+        when(vessel1Race.getFinishTime()).thenReturn(LocalDateTime.now().minusHours(25));
+        when(vessel1.getRace(RACE_NO)).thenReturn(Optional.of(vessel1Race));
+        Race vessel2Race = mock(Race.class);
+        when(vessel2Race.isFinished()).thenReturn(true);
+        when(vessel2Race.getFinishTime()).thenReturn(LocalDateTime.now().minusHours(23));
+        when(vessel2.getRace(RACE_NO)).thenReturn(Optional.of(vessel2Race));
+
+        assertThat(underTest.isFinished(RACE_NO), is(false));
+
+    }
+
+    @Test
+    void oneVesselStillRacing() {
+
+        Race vessel1Race = mock(Race.class);
+        when(vessel1Race.isFinished()).thenReturn(true);
+        when(vessel1Race.getFinishTime()).thenReturn(LocalDateTime.now().minusHours(25));
+        when(vessel1.getRace(RACE_NO)).thenReturn(Optional.of(vessel1Race));
+        Race vessel2Race = mock(Race.class);
+        when(vessel2Race.isFinished()).thenReturn(false);
+        when(vessel2.getRace(RACE_NO)).thenReturn(Optional.of(vessel2Race));
+
+        assertThat(underTest.isFinished(RACE_NO), is(false));
+
     }
 
     private Vessel mockVessel(Map<Integer, Integer> seedData) {

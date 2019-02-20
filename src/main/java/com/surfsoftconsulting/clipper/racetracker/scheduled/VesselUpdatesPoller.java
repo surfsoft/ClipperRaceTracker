@@ -16,6 +16,7 @@ package com.surfsoftconsulting.clipper.racetracker.scheduled;
  * limitations under the License.
  */
 
+import com.surfsoftconsulting.clipper.racetracker.service.RaceService;
 import com.surfsoftconsulting.clipper.racetracker.service.VesselService;
 import com.surfsoftconsulting.clipper.racetracker.web.*;
 import org.jsoup.nodes.Document;
@@ -37,18 +38,20 @@ public class VesselUpdatesPoller {
     private final RaceStandingsDataParser raceStandingsDataParser;
     private final SpeedAndCourseDataParser speedAndCourseDataParser;
     private final RaceNumberParser raceNumberParser;
+    private final RaceService raceService;
     private final VesselService vesselService;
 
     public VesselUpdatesPoller(RaceStandingsDocumentFactory raceStandingsDocumentFactory,
                                RaceStandingsDataParser raceStandingsDataParser,
                                SpeedAndCourseDataParser speedAndCourseDataParser,
                                RaceNumberParser raceNumberParser,
-                               VesselService vesselService) {
+                               RaceService raceService, VesselService vesselService) {
 
         this.raceStandingsDocumentFactory = raceStandingsDocumentFactory;
         this.raceStandingsDataParser = raceStandingsDataParser;
         this.speedAndCourseDataParser = speedAndCourseDataParser;
         this.raceNumberParser = raceNumberParser;
+        this.raceService = raceService;
         this.vesselService = vesselService;
 
     }
@@ -59,13 +62,17 @@ public class VesselUpdatesPoller {
         LOGGER.debug("Polling {} for changes", RACE_STANDINGS_PAGE);
 
         Document standingsPage = raceStandingsDocumentFactory.fromUrl(RACE_STANDINGS_PAGE);
+
         if (standingsPage != null) {
-            List<SpeedAndCourseData> speedsAndCourses = speedAndCourseDataParser.parse(standingsPage);
             int raceNo = raceNumberParser.parse(standingsPage);
-            long updateCount = raceStandingsDataParser.parse(standingsPage).stream().map(raceStandingsData -> vesselService.updatePosition(raceNo, raceStandingsData, speedsAndCourses)).count();
-            if (updateCount > 0) {
-                vesselService.updateFleetPositions();
+            if (!raceService.isFinished(raceNo)) {
+                List<SpeedAndCourseData> speedsAndCourses = speedAndCourseDataParser.parse(standingsPage);
+                long updateCount = raceStandingsDataParser.parse(standingsPage).stream().map(raceStandingsData -> vesselService.updatePosition(raceNo, raceStandingsData, speedsAndCourses)).count();
+                if (updateCount > 0) {
+                    vesselService.updateFleetPositions();
+                }
             }
+
         }
 
     }

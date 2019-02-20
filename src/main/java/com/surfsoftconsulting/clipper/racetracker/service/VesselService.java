@@ -103,13 +103,13 @@ public class VesselService {
             }
             if (race.get().getFinishTime() == null) {
                 if (raceStandingsData.getTimestamp() == null) {
+                    // Vessel has finished the current race
                     race.get().setFinishTime(raceStandingsData.getFinishTimestamp());
                     update = true;
                 }
                 else {
                     Position latestPosition = race.get().getLatestPosition();
                     if (latestPosition.getTimestamp() == null || latestPosition.getTimestamp().isBefore(raceStandingsData.getTimestamp())) { // A new update is available; save it
-
                         SpeedAndCourseData speedAndCourseData = speedAndCourseDataResolver.resolve(vessel.getName(), speedsAndCourses);
                         race.get().getPositions().add(positionFactory.fromRaceStandingsData(raceStandingsData, speedAndCourseData));
                         update = true;
@@ -120,7 +120,12 @@ public class VesselService {
                 }
             }
             else {
-                LOGGER.debug("Vessel '{}' has completed this race", raceStandingsData.getName());
+                // TODO test this
+                // Race finished, but final order may not be correct immediately. Check if the provided position has changed, if so, update it
+                if (race.get().getLatestPosition().getPosition() != raceStandingsData.getPosition()) {
+                    race.get().getLatestPosition().setPosition(raceStandingsData.getPosition());
+                    update = true;
+                }
             }
         }
         else {

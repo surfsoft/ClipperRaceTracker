@@ -21,6 +21,7 @@ import com.surfsoftconsulting.clipper.racetracker.domain.Vessel;
 import com.surfsoftconsulting.clipper.racetracker.domain.VesselRepository;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static java.util.Comparator.comparingInt;
@@ -56,6 +57,20 @@ public class RaceService {
                 .filter(v -> v.getRace(currentRace).isPresent())
                 .sorted(comparingInt(v -> v.getRace(currentRace).get().getLatestPosition().getPosition()))
                 .collect(toList());
+
+    }
+
+    /**
+     * @return true if all vessels have finished the race more than 24 hours ago
+     */
+    public boolean isFinished(int raceNo) {
+
+        return vesselRepository
+                .findAll()
+                .stream()
+                .filter(v -> v.getRace(raceNo).isPresent())
+                .map(v -> v.getRace(raceNo).get())
+                .allMatch(r -> r.isFinished() && r.getFinishTime().plusHours(24).isBefore(LocalDateTime.now()));
 
     }
 

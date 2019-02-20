@@ -258,23 +258,54 @@ class VesselServiceTest {
     }
 
     @Test
-    void updateAfterFinished() {
+    void updateAfterFinishedNoPositionChange() {
 
         RaceStandingsData raceStandingsData = mock(RaceStandingsData.class);
         when(raceStandingsData.getName()).thenReturn(VESSEL_NAME);
+        when(raceStandingsData.getPosition()).thenReturn(2);
         Vessel vessel = mock(Vessel.class);
         when(vessel.getId()).thenReturn(VESSEL_ID);
         when(vessel.getName()).thenReturn(VESSEL_NAME);
         when(vesselRepository.findByName(VESSEL_NAME)).thenReturn(vessel);
         Race race = mock(Race.class);
         when(race.getFinishTime()).thenReturn(LAST_UPDATE_TIMESTAMP);
+        Position position = mock(Position.class);
+        when(position.getPosition()).thenReturn(2);
+        when(race.getLatestPosition()).thenReturn(position);
         when(vessel.getRace(RACE_NO)).thenReturn(Optional.of(race));
         @SuppressWarnings("unchecked")
         List<SpeedAndCourseData> speedsAndCourses = mock(List.class);
 
         underTest.updatePosition(RACE_NO, raceStandingsData, speedsAndCourses);
 
+        verify(position, never()).setPosition(anyInt());
         verify(vesselRepository, never()).save(any(Vessel.class));
+
+    }
+
+    @Test
+    void updateAfterFinishedWhenPositionChanges() {
+
+        RaceStandingsData raceStandingsData = mock(RaceStandingsData.class);
+        when(raceStandingsData.getName()).thenReturn(VESSEL_NAME);
+        when(raceStandingsData.getPosition()).thenReturn(2);
+        Vessel vessel = mock(Vessel.class);
+        when(vessel.getId()).thenReturn(VESSEL_ID);
+        when(vessel.getName()).thenReturn(VESSEL_NAME);
+        when(vesselRepository.findByName(VESSEL_NAME)).thenReturn(vessel);
+        Race race = mock(Race.class);
+        when(race.getFinishTime()).thenReturn(LAST_UPDATE_TIMESTAMP);
+        Position position = mock(Position.class);
+        when(position.getPosition()).thenReturn(1);
+        when(race.getLatestPosition()).thenReturn(position);
+        when(vessel.getRace(RACE_NO)).thenReturn(Optional.of(race));
+        @SuppressWarnings("unchecked")
+        List<SpeedAndCourseData> speedsAndCourses = mock(List.class);
+
+        underTest.updatePosition(RACE_NO, raceStandingsData, speedsAndCourses);
+
+        verify(position).setPosition(2);
+        verify(vesselRepository).save(vessel);
 
     }
 
