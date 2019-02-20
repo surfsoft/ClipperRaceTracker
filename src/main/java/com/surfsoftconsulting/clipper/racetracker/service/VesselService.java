@@ -120,7 +120,6 @@ public class VesselService {
                 }
             }
             else {
-                // TODO test this
                 // Race finished, but final order may not be correct immediately. Check if the provided position has changed, if so, update it
                 if (race.get().getLatestPosition().getPosition() != raceStandingsData.getPosition()) {
                     race.get().getLatestPosition().setPosition(raceStandingsData.getPosition());
