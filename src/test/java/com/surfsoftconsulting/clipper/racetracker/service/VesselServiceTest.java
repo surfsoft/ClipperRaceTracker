@@ -17,6 +17,7 @@ package com.surfsoftconsulting.clipper.racetracker.service;
  */
 
 import com.surfsoftconsulting.clipper.racetracker.domain.*;
+import com.surfsoftconsulting.clipper.racetracker.rest.ExportedPositionResponse;
 import com.surfsoftconsulting.clipper.racetracker.rest.ExportedPositionsResponseFactory;
 import com.surfsoftconsulting.clipper.racetracker.rest.VesselResponse;
 import com.surfsoftconsulting.clipper.racetracker.rest.VesselResponseFactory;
@@ -26,10 +27,7 @@ import com.surfsoftconsulting.clipper.racetracker.web.SpeedAndCourseDataResolver
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -37,6 +35,7 @@ import static java.util.Optional.empty;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -58,8 +57,9 @@ class VesselServiceTest {
     private final SpeedAndCourseDataResolver speedAndCourseDataResolver = mock(SpeedAndCourseDataResolver.class);
     private final RaceFactory raceFactory = mock(RaceFactory.class);
     private final ExportedPositionsResponseFactory exportedPositionsResponseFactory = mock(ExportedPositionsResponseFactory.class);
+    private final FleetSorter fleetSorter = mock(FleetSorter.class);
 
-    private final VesselService underTest = new VesselService(vesselRepository, vesselFactory, raceFactory, vesselResponseFactory, positionFactory, speedAndCourseDataResolver, exportedPositionsResponseFactory);
+    private final VesselService underTest = new VesselService(vesselRepository, vesselFactory, raceFactory, vesselResponseFactory, positionFactory, speedAndCourseDataResolver, exportedPositionsResponseFactory, fleetSorter);
 
     @Test
     void nullId() {
@@ -124,6 +124,7 @@ class VesselServiceTest {
 
         RaceStandingsData raceStandingsData = mock(RaceStandingsData.class);
         when(raceStandingsData.getName()).thenReturn(VESSEL_NAME);
+        @SuppressWarnings("unchecked")
         List<SpeedAndCourseData> speedsAndCourses = mock(List.class);
         when(vesselRepository.findByName(VESSEL_NAME)).thenReturn(null);
 
@@ -142,6 +143,7 @@ class VesselServiceTest {
         Vessel vessel = mock(Vessel.class);
         when(vessel.getId()).thenReturn(VESSEL_ID);
         when(vessel.getName()).thenReturn(VESSEL_NAME);
+        @SuppressWarnings("unchecked")
         Set<Race> races = mock(Set.class);
         when(vessel.getRaces()).thenReturn(races);
         when(vesselRepository.findByName(VESSEL_NAME)).thenReturn(vessel);
@@ -151,11 +153,13 @@ class VesselServiceTest {
         Position latestPosition = mock(Position.class);
         when(race.getLatestPosition()).thenReturn(latestPosition);
         when(latestPosition.getTimestamp()).thenReturn(null);
+        @SuppressWarnings("unchecked")
         List<SpeedAndCourseData> speedsAndCourses = mock(List.class);
         SpeedAndCourseData speedAndCourseData = mock(SpeedAndCourseData.class);
         when(speedAndCourseDataResolver.resolve(VESSEL_NAME, speedsAndCourses)).thenReturn(speedAndCourseData);
         Position newPosition = mock(Position.class);
         when(positionFactory.fromRaceStandingsData(raceStandingsData, speedAndCourseData)).thenReturn(newPosition);
+        @SuppressWarnings("unchecked")
         Set<Position> positions = mock(Set.class);
         when(race.getPositions()).thenReturn(positions);
 
@@ -182,11 +186,13 @@ class VesselServiceTest {
         Position latestPosition = mock(Position.class);
         when(race.getLatestPosition()).thenReturn(latestPosition);
         when(latestPosition.getTimestamp()).thenReturn(LAST_UPDATE_TIMESTAMP);
+        @SuppressWarnings("unchecked")
         List<SpeedAndCourseData> speedsAndCourses = mock(List.class);
         SpeedAndCourseData speedAndCourseData = mock(SpeedAndCourseData.class);
         when(speedAndCourseDataResolver.resolve(VESSEL_NAME, speedsAndCourses)).thenReturn(speedAndCourseData);
         Position newPosition = mock(Position.class);
         when(positionFactory.fromRaceStandingsData(raceStandingsData, speedAndCourseData)).thenReturn(newPosition);
+        @SuppressWarnings("unchecked")
         Set<Position> positions = mock(Set.class);
         when(race.getPositions()).thenReturn(positions);
 
@@ -212,11 +218,13 @@ class VesselServiceTest {
         Position latestPosition = mock(Position.class);
         when(race.getLatestPosition()).thenReturn(latestPosition);
         when(latestPosition.getTimestamp()).thenReturn(LAST_UPDATE_TIMESTAMP);
+        @SuppressWarnings("unchecked")
         List<SpeedAndCourseData> speedsAndCourses = mock(List.class);
         SpeedAndCourseData speedAndCourseData = mock(SpeedAndCourseData.class);
         when(speedAndCourseDataResolver.resolve(VESSEL_NAME, speedsAndCourses)).thenReturn(speedAndCourseData);
         Position newPosition = mock(Position.class);
         when(positionFactory.fromRaceStandingsData(raceStandingsData, speedAndCourseData)).thenReturn(newPosition);
+        @SuppressWarnings("unchecked")
         Set<Position> positions = mock(Set.class);
         when(race.getPositions()).thenReturn(positions);
 
@@ -239,6 +247,7 @@ class VesselServiceTest {
         when(vesselRepository.findByName(VESSEL_NAME)).thenReturn(vessel);
         Race race = mock(Race.class);
         when(vessel.getRace(RACE_NO)).thenReturn(Optional.of(race));
+        @SuppressWarnings("unchecked")
         List<SpeedAndCourseData> speedsAndCourses = mock(List.class);
 
         underTest.updatePosition(RACE_NO, raceStandingsData, speedsAndCourses);
@@ -260,6 +269,7 @@ class VesselServiceTest {
         Race race = mock(Race.class);
         when(race.getFinishTime()).thenReturn(LAST_UPDATE_TIMESTAMP);
         when(vessel.getRace(RACE_NO)).thenReturn(Optional.of(race));
+        @SuppressWarnings("unchecked")
         List<SpeedAndCourseData> speedsAndCourses = mock(List.class);
 
         underTest.updatePosition(RACE_NO, raceStandingsData, speedsAndCourses);
@@ -301,10 +311,37 @@ class VesselServiceTest {
         positions.add(position1);
         positions.add(position2);
         when(race.getPositions()).thenReturn(positions);
-        List exportedPositions = mock(List.class);
+        List<ExportedPositionResponse> exportedPositions = Collections.emptyList();
         when(exportedPositionsResponseFactory.toExportedPositionResponse(asList(position2, position1))).thenReturn(exportedPositions);
 
         assertThat(underTest.export(VESSEL_ID, RACE_NO), is(exportedPositions));
+
+    }
+
+    @Test
+    void updateFleetPositions() {
+
+        Race vessel1race = mockRace(1);
+        Race vessel2race = mockRace(2);
+        Race vessel3race = mockRace(2);
+
+        Vessel vessel1 = mockVessel(vessel1race, 1);
+        Vessel vessel2 = mockVessel(vessel2race, 2);
+        Vessel vessel3 = mockVessel(vessel3race, 2);
+        Vessel vessel4 = mockVessel(null, 2);
+        List<Vessel> vessels = asList(vessel1, vessel2, vessel3, vessel4);
+        when(vesselRepository.findAll()).thenReturn(vessels);
+
+        Comparator<Vessel> fleetPositionComparator = mock(FleetPositionComparator.class);
+        when(fleetPositionComparator.compare(any(Vessel.class), any(Vessel.class))).thenReturn(1);
+
+        underTest.updateFleetPositions();
+
+        verify(fleetSorter).sort(vessels, 2);
+        verify(vessel1race, never()).setFleetPosition(anyInt());
+        verify(vessel2race).setFleetPosition(anyInt());
+        verify(vessel3race).setFleetPosition(anyInt());
+        verify(vesselRepository).save(vessels);
 
     }
 
@@ -314,6 +351,27 @@ class VesselServiceTest {
         when(position.getTimestamp()).thenReturn(timestamp);
 
         return position;
+
+    }
+
+    private Race mockRace(int raceNo) {
+
+        Race race = mock(Race.class);
+
+        when(race.getRaceNo()).thenReturn(raceNo);
+
+        return race;
+
+    }
+
+    private Vessel mockVessel(Race race, int raceNo) {
+
+        Vessel vessel = mock(Vessel.class);
+
+        when(vessel.getLatestRace()).thenReturn(Optional.ofNullable(race));
+        when(vessel.getRace(raceNo)).thenReturn(Optional.ofNullable(race));
+
+        return vessel;
 
     }
 

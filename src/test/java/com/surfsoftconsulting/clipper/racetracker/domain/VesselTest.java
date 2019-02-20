@@ -69,15 +69,4 @@ class VesselTest {
 
     }
 
-    @Test
-    void test() {
-
-        assertThat(underTest.hasNotStarted(), is(true));
-
-        underTest.getRaces().add(race1);
-
-        assertThat(underTest.hasNotStarted(), is(false));
-
-    }
-
 }

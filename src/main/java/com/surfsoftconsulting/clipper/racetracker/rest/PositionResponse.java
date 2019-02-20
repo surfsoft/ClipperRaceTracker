@@ -22,12 +22,12 @@ public class PositionResponse {
 
     private final String id;
     private final String name;
-    private final int position;
+    private final Integer position;
     private final String mode;
     private final CoordinatesResponse coordinatesResponse;
     private final String mapView;
 
-    PositionResponse(String id, String name, int position, String mode, CoordinatesResponse coordinatesResponse, String mapView) {
+    PositionResponse(String id, String name, Integer position, String mode, CoordinatesResponse coordinatesResponse, String mapView) {
         this.id = id;
         this.name = name;
         this.position = position;
@@ -44,7 +44,7 @@ public class PositionResponse {
         return name;
     }
 
-    public int getPosition() {
+    public Integer getPosition() {
         return position;
     }
 

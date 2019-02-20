@@ -32,6 +32,8 @@ public class Race {
 
     private Set<Position> positions;
 
+    private Integer fleetPosition;
+
     private LocalDateTime finishTime;
 
     public Race() {    }
@@ -57,6 +59,14 @@ public class Race {
         this.positions = positions;
     }
 
+    public Integer getFleetPosition() {
+        return fleetPosition;
+    }
+
+    public void setFleetPosition(Integer fleetPosition) {
+        this.fleetPosition = fleetPosition;
+    }
+
     public LocalDateTime getFinishTime() {
         return finishTime;
     }
@@ -72,9 +82,7 @@ public class Race {
     @JsonIgnore
     public Position getLatestPosition() {
         return positions
-                .stream()
-                .sorted(Comparator.comparing(Position::getTimestamp).reversed())
-                .findFirst()
+                .stream().max(Comparator.comparing(Position::getTimestamp))
                 .orElse(new Position());
     }
 
@@ -89,6 +97,7 @@ public class Race {
         return new EqualsBuilder()
                 .append(raceNo, race.raceNo)
                 .append(positions, race.positions)
+                .append(fleetPosition, race.fleetPosition)
                 .append(finishTime, race.finishTime)
                 .isEquals();
     }
@@ -98,6 +107,7 @@ public class Race {
         return new HashCodeBuilder(17, 37)
                 .append(raceNo)
                 .append(positions)
+                .append(fleetPosition)
                 .append(finishTime)
                 .toHashCode();
     }
@@ -107,6 +117,7 @@ public class Race {
         return new ToStringBuilder(this)
                 .append("raceNo", raceNo)
                 .append("positions", positions)
+                .append("fleetPosition", fleetPosition)
                 .append("finishTime", finishTime)
                 .toString();
     }

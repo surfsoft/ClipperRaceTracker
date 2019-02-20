@@ -1,19 +1,5 @@
 package com.surfsoftconsulting.clipper.racetracker.slack;
 
-import com.surfsoftconsulting.clipper.racetracker.domain.Position;
-import com.surfsoftconsulting.clipper.racetracker.domain.Race;
-import com.surfsoftconsulting.clipper.racetracker.domain.Vessel;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import java.time.LocalDateTime;
-import java.util.Optional;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 /*
  * Copyright 2017 Phil Haigh
  *
@@ -29,6 +15,21 @@ import static org.mockito.Mockito.when;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import com.surfsoftconsulting.clipper.racetracker.domain.Position;
+import com.surfsoftconsulting.clipper.racetracker.domain.Race;
+import com.surfsoftconsulting.clipper.racetracker.domain.Vessel;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 class PositionResponseRendererTest {
 
     private final PositionRenderer positionRenderer = mock(PositionRenderer.class);
@@ -38,16 +39,6 @@ class PositionResponseRendererTest {
     @BeforeEach
     void setUp() {
         when(positionRenderer.toPosition(1)).thenReturn("1st");
-    }
-
-    @Test
-    void raceHasNotStarted() {
-
-        Vessel vessel = mock(Vessel.class);
-        when(vessel.hasNotStarted()).thenReturn(true);
-
-        assertThat(underTest.render(vessel), is("It looks like the Clipper Round the World race hasn't started yet (or at least nobody has told me about it if it has)"));
-
     }
 
     @Test
@@ -81,17 +72,16 @@ class PositionResponseRendererTest {
     private Vessel mockVessel(LocalDateTime finishTime, boolean stealthMode) {
 
         Position position = mock(Position.class);
-        when(position.getPosition()).thenReturn(1);
         when(position.isInStealthMode()).thenReturn(stealthMode);
 
         Race race = mock(Race.class);
         when(race.getLatestPosition()).thenReturn(position);
         when(race.getRaceNo()).thenReturn(2);
         when(race.getFinishTime()).thenReturn(finishTime);
+        when(race.getFleetPosition()).thenReturn(1);
 
         Vessel vessel = mock(Vessel.class);
         when(vessel.getName()).thenReturn("CV26");
-        when(vessel.hasNotStarted()).thenReturn(false);
         when(vessel.getLatestRace()).thenReturn(Optional.of(race));
 
         return vessel;

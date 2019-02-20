@@ -76,11 +76,7 @@ public class Vessel {
     }
 
     public Optional<Race> getLatestRace() {
-        return getRaces().stream().sorted(Comparator.comparing(Race::getRaceNo).reversed()).findFirst();
-    }
-
-    public boolean hasNotStarted() {
-        return races.isEmpty();
+        return getRaces().stream().max(Comparator.comparing(Race::getRaceNo));
     }
 
     public String getStatus(int raceNo) {
@@ -102,7 +98,7 @@ public class Vessel {
     }
 
     public int getPosition(int raceNo) {
-        return getRace(raceNo).map(r -> r.getLatestPosition().getPosition()).orElse(0);
+        return getRace(raceNo).map(Race::getFleetPosition).orElse(0);
     }
 
     @Override

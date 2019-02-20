@@ -62,7 +62,10 @@ public class VesselUpdatesPoller {
         if (standingsPage != null) {
             List<SpeedAndCourseData> speedsAndCourses = speedAndCourseDataParser.parse(standingsPage);
             int raceNo = raceNumberParser.parse(standingsPage);
-            raceStandingsDataParser.parse(standingsPage).forEach(raceStandingsData -> vesselService.updatePosition(raceNo, raceStandingsData, speedsAndCourses));
+            long updateCount = raceStandingsDataParser.parse(standingsPage).stream().map(raceStandingsData -> vesselService.updatePosition(raceNo, raceStandingsData, speedsAndCourses)).count();
+            if (updateCount > 0) {
+                vesselService.updateFleetPositions();
+            }
         }
 
     }

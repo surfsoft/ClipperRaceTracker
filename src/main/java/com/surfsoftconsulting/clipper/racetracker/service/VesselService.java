@@ -50,8 +50,9 @@ public class VesselService {
     private final PositionFactory positionFactory;
     private final SpeedAndCourseDataResolver speedAndCourseDataResolver;
     private final ExportedPositionsResponseFactory exportedPositionsResponseFactory;
+    private final FleetSorter fleetSorter;
 
-    public VesselService(VesselRepository vesselRepository, VesselFactory vesselFactory, RaceFactory raceFactory, VesselResponseFactory vesselResponseFactory, PositionFactory positionFactory, SpeedAndCourseDataResolver speedAndCourseDataResolver, ExportedPositionsResponseFactory exportedPositionsResponseFactory) {
+    public VesselService(VesselRepository vesselRepository, VesselFactory vesselFactory, RaceFactory raceFactory, VesselResponseFactory vesselResponseFactory, PositionFactory positionFactory, SpeedAndCourseDataResolver speedAndCourseDataResolver, ExportedPositionsResponseFactory exportedPositionsResponseFactory, FleetSorter fleetSorter) {
         this.vesselRepository = vesselRepository;
         this.vesselFactory = vesselFactory;
         this.raceFactory = raceFactory;
@@ -59,6 +60,7 @@ public class VesselService {
         this.positionFactory = positionFactory;
         this.speedAndCourseDataResolver = speedAndCourseDataResolver;
         this.exportedPositionsResponseFactory = exportedPositionsResponseFactory;
+        this.fleetSorter = fleetSorter;
     }
 
     public List<VesselResponse> getVessels() {
@@ -87,7 +89,7 @@ public class VesselService {
 
     }
 
-    public void updatePosition(int raceNo, RaceStandingsData raceStandingsData, List<SpeedAndCourseData> speedsAndCourses) {
+    public boolean updatePosition(int raceNo, RaceStandingsData raceStandingsData, List<SpeedAndCourseData> speedsAndCourses) {
 
         Vessel vessel = vesselRepository.findByName(raceStandingsData.getName());
         boolean update = false;
@@ -129,6 +131,8 @@ public class VesselService {
             vesselRepository.save(vessel);
         }
 
+        return update;
+
     }
 
     public List<ExportedPositionResponse> export(String id, int raceNo) {
@@ -142,4 +146,25 @@ public class VesselService {
         }
 
     }
+
+    public void updateFleetPositions() {
+
+        List<Vessel> vessels = vesselRepository.findAll();
+        Optional<Race> race = vessels.stream().map(Vessel::getLatestRace).filter(Optional::isPresent).map(Optional::get).max(Comparator.comparingInt(Race::getRaceNo));
+        if (race.isPresent()) {
+            int raceNo = race.get().getRaceNo();
+            fleetSorter.sort(vessels, raceNo);
+            int position = 1;
+            for (Vessel vessel: vessels) {
+                Optional<Race> currentRace = vessel.getRace(raceNo);
+                if (currentRace.isPresent()) {
+                    currentRace.get().setFleetPosition(position++);
+                }
+            }
+            vesselRepository.save(vessels);
+        }
+
+
+    }
+
 }

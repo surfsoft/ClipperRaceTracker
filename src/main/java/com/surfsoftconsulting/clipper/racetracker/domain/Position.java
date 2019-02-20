@@ -151,6 +151,10 @@ public class Position {
         this.inStealthMode = inStealthMode;
     }
 
+    public boolean isFinished() {
+        return finishTimestamp != null;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -47,6 +47,7 @@ public class PositionService {
 
         Position position = new Position();
         String name = null;
+        Integer fleetPosition = null;
         if (StringUtils.isNotBlank(id)) {
             Vessel vessel = vesselRepository.findById(id);
             if (vessel != null) {
@@ -54,6 +55,7 @@ public class PositionService {
                 Optional<Race> race = vessel.getLatestRace();
                 if (race.isPresent()) {
                     position = race.get().getLatestPosition();
+                    fleetPosition = race.get().getFleetPosition();
                 }
             }
             else {
@@ -64,7 +66,7 @@ public class PositionService {
             LOGGER.warn("id is blank");
         }
 
-        return positionResponseFactory.toPositionResponse(id, name, position);
+        return positionResponseFactory.toPositionResponse(id, name, position, fleetPosition);
 
     }
 

@@ -22,6 +22,7 @@ import com.surfsoftconsulting.clipper.racetracker.domain.Vessel;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static java.lang.String.format;
 
@@ -37,25 +38,25 @@ public class PositionResponseRenderer {
     public String render(Vessel vessel) {
 
         final String response;
-        if (vessel.hasNotStarted()) {
-            response = "It looks like the Clipper Round the World race hasn't started yet (or at least nobody has told me about it if it has)";
-        }
-        else {
-            Race race = vessel.getLatestRace().get();
+        Optional<Race> latestRace = vessel.getLatestRace();
+        if (latestRace.isPresent()) {
+            Race race = latestRace.get();
             String name = vessel.getName();
             Position position = race.getLatestPosition();
             LocalDateTime finishTime = race.getFinishTime();
 
             if (finishTime != null) {
-                response = format("%s has finished race %s in %s place", name, race.getRaceNo(), positionRenderer.toPosition(position.getPosition()));
+                response = format("%s has finished race %s in %s place", name, race.getRaceNo(), positionRenderer.toPosition(race.getFleetPosition()));
             }
             else if (position.isInStealthMode()) {
                 response = format("%s is in stealth mode", name);
             }
             else {
-                response = format("%s is in %s place", name, positionRenderer.toPosition(position.getPosition()));
+                response = format("%s is in %s place", name, positionRenderer.toPosition(race.getFleetPosition()));
             }
-
+        }
+        else {
+            response = "It looks like the Clipper Round the World race hasn't started yet (or at least nobody has told me about it if it has)";
         }
 
         return response;
