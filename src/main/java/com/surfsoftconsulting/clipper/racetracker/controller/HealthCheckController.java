@@ -24,7 +24,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 @RestController
 public class HealthCheckController {
 
-    @RequestMapping(method=GET, path="/")
+    @RequestMapping(method=GET, path="/healthcheck")
     public void healthCheck() {}
 
 }
