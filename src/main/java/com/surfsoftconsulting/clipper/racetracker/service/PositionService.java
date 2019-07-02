@@ -49,10 +49,10 @@ public class PositionService {
         String name = null;
         Integer fleetPosition = null;
         if (StringUtils.isNotBlank(id)) {
-            Vessel vessel = vesselRepository.findById(id);
-            if (vessel != null) {
-                name = vessel.getName();
-                Optional<Race> race = vessel.getLatestRace();
+            Optional<Vessel> vessel = vesselRepository.findById(id);
+            if (vessel.isPresent()) {
+                name = vessel.get().getName();
+                Optional<Race> race = vessel.get().getLatestRace();
                 if (race.isPresent()) {
                     position = race.get().getLatestPosition();
                     fleetPosition = race.get().getFleetPosition();

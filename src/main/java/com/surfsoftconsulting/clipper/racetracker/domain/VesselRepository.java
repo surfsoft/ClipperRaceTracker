@@ -19,9 +19,11 @@ package com.surfsoftconsulting.clipper.racetracker.domain;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Optional;
+
 public interface VesselRepository extends MongoRepository<Vessel, String> {
 
-    Vessel findById(@Param("id") String id);
+    Optional<Vessel> findById(@Param("id") String id);
 
     Vessel findByName(@Param("name") String name);
 

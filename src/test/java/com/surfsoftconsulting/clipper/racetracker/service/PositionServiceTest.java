@@ -69,7 +69,7 @@ class PositionServiceTest {
     @Test
     void validIdWithNoRace() {
 
-        when(vesselRepository.findById(VESSEL_ID)).thenReturn(vessel);
+        when(vesselRepository.findById(VESSEL_ID)).thenReturn(Optional.of(vessel));
         when(vessel.getName()).thenReturn(VESSEL_NAME);
         when(vessel.getLatestRace()).thenReturn(Optional.empty());
         when(positionResponseFactory.toPositionResponse(eq(VESSEL_ID), eq(VESSEL_NAME), any(Position.class), eq(null))).thenReturn(positionResponse);
@@ -81,7 +81,7 @@ class PositionServiceTest {
     @Test
     void validIdWithNoPosition() {
 
-        when(vesselRepository.findById(VESSEL_ID)).thenReturn(vessel);
+        when(vesselRepository.findById(VESSEL_ID)).thenReturn(Optional.of(vessel));
         when(vessel.getName()).thenReturn(VESSEL_NAME);
         when(vessel.getLatestRace()).thenReturn(Optional.of(race));
         Position position = mock(Position.class);

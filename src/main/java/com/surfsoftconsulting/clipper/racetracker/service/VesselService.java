@@ -141,9 +141,9 @@ public class VesselService {
 
     public List<ExportedPositionResponse> export(String id, int raceNo) {
 
-        Vessel vessel = vesselRepository.findById(id);
-        if (vessel != null && vessel.getRace(raceNo).isPresent()) {
-            return exportedPositionsResponseFactory.toExportedPositionResponse(vessel.getRace(raceNo).get().getPositions().stream().sorted(Comparator.comparing(Position::getTimestamp)).collect(toList()));
+        Optional<Vessel> vessel = vesselRepository.findById(id);
+        if (vessel.isPresent() && vessel.get().getRace(raceNo).isPresent()) {
+            return exportedPositionsResponseFactory.toExportedPositionResponse(vessel.get().getRace(raceNo).get().getPositions().stream().sorted(Comparator.comparing(Position::getTimestamp)).collect(toList()));
         }
         else {
             return Collections.emptyList();
@@ -165,7 +165,7 @@ public class VesselService {
                     currentRace.get().setFleetPosition(position++);
                 }
             }
-            vesselRepository.save(vessels);
+            vesselRepository.saveAll(vessels);
         }
 
 

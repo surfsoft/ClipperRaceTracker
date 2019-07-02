@@ -19,6 +19,7 @@ package com.surfsoftconsulting.clipper.racetracker.domain;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
 
@@ -33,15 +34,15 @@ public class VesselResolver {
 
     public Vessel resolve(String text) {
 
-        Vessel vessel = vesselRepository.findById(text);
-        if (vessel == null) {
+        Optional<Vessel> vessel = vesselRepository.findById(text);
+        if (!vessel.isPresent()) {
             List<Vessel> vessels = vesselRepository.findAll().stream().filter(v -> v.getName().toLowerCase().contains(text)).collect(toList());
             if (vessels.size() == 1) {
-                vessel = vessels.get(0);
+                vessel = Optional.of(vessels.get(0));
             }
         }
 
-        return vessel;
+        return (vessel.isPresent()) ? vessel.get() : null;
 
     }
 

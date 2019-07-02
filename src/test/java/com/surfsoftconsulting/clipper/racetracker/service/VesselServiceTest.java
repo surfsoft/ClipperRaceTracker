@@ -85,7 +85,7 @@ class VesselServiceTest {
     void idExists() {
 
         Vessel vessel = mock(Vessel.class);
-        when(vesselRepository.findById(VESSEL_ID)).thenReturn(vessel);
+        when(vesselRepository.findById(VESSEL_ID)).thenReturn(Optional.of(vessel));
 
         assertThat(underTest.create(VESSEL_ID, VESSEL_NAME), is(""));
 
@@ -312,7 +312,7 @@ class VesselServiceTest {
     @Test
     void exportInvalidVesselId() {
 
-        when(vesselRepository.findById(VESSEL_ID)).thenReturn(null);
+        when(vesselRepository.findById(VESSEL_ID)).thenReturn(Optional.empty());
 
         assertThat(underTest.export(VESSEL_ID, 1), is(emptyList()));
 
@@ -322,7 +322,7 @@ class VesselServiceTest {
     void exportInvalidRaceNo() {
 
         Vessel vessel = mock(Vessel.class);
-        when(vesselRepository.findById(VESSEL_ID)).thenReturn(vessel);
+        when(vesselRepository.findById(VESSEL_ID)).thenReturn(Optional.of(vessel));
         when(vessel.getRace(RACE_NO)).thenReturn(empty());
 
         assertThat(underTest.export(VESSEL_ID, RACE_NO), is(emptyList()));
@@ -333,7 +333,7 @@ class VesselServiceTest {
     void export() {
 
         Vessel vessel = mock(Vessel.class);
-        when(vesselRepository.findById(VESSEL_ID)).thenReturn(vessel);
+        when(vesselRepository.findById(VESSEL_ID)).thenReturn(Optional.of(vessel));
         Race race = mock(Race.class);
         when(vessel.getRace(RACE_NO)).thenReturn(Optional.of(race));
         HashSet<Position> positions = new HashSet<>();
@@ -372,7 +372,7 @@ class VesselServiceTest {
         verify(vessel1race, never()).setFleetPosition(anyInt());
         verify(vessel2race).setFleetPosition(anyInt());
         verify(vessel3race).setFleetPosition(anyInt());
-        verify(vesselRepository).save(vessels);
+        verify(vesselRepository).saveAll(vessels);
 
     }
 

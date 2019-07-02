@@ -18,6 +18,8 @@ package com.surfsoftconsulting.clipper.racetracker.domain;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Optional;
+
 import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.nullValue;
@@ -46,7 +48,7 @@ class VesselResolverTest {
     @Test
     void resolveById() {
 
-        when(vesselRepository.findById(VESSEL_ID)).thenReturn(vessel2);
+        when(vesselRepository.findById(VESSEL_ID)).thenReturn(Optional.of(vessel2));
 
         assertThat(underTest.resolve(VESSEL_ID), is(vessel2));
 
@@ -65,7 +67,7 @@ class VesselResolverTest {
     @Test
     void resolvesToNothing() {
 
-        when(vesselRepository.findById(VESSEL_ID)).thenReturn(null);
+        when(vesselRepository.findById(VESSEL_ID)).thenReturn(Optional.empty());
         when(vesselRepository.findAll()).thenReturn(asList(vessel1, vessel2, vessel3));
 
         assertThat(underTest.resolve(UNKNOWN_VESSEL), is(nullValue()));
@@ -75,7 +77,7 @@ class VesselResolverTest {
     @Test
     void resolvesToMoreThanOne() {
 
-        when(vesselRepository.findById(VESSEL_ID)).thenReturn(null);
+        when(vesselRepository.findById(VESSEL_ID)).thenReturn(Optional.empty());
         when(vesselRepository.findAll()).thenReturn(asList(vessel1, vessel2, vessel3));
 
         assertThat(underTest.resolve(AMBIGUOUS_VESSEL_NAME), is(nullValue()));
