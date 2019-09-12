@@ -72,3 +72,7 @@ It uses the service above to display the current race position of a selected boa
 # Race tracker data
 
 Now that the 18/18 race is over I've added vessel-1718.json.zip to the project. This is all the data collected from early on in leg 3 through to the end of the race, exported from MongoDB.
+
+# 19/20 Race
+
+As the 19/20 race has started I've made some initial updates so that the tracker works with the updated race viewer page HTML - although this was after race 1 to Portugal had finished. I'll be updating again as necessary once race 2 to Punta del Este has got under way.
