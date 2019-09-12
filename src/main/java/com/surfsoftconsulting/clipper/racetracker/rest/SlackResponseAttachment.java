@@ -3,7 +3,7 @@ package com.surfsoftconsulting.clipper.racetracker.rest;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /*
- * Copyright 2017 Phil Haigh
+ * Copyright 2019 Phil Haigh
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
