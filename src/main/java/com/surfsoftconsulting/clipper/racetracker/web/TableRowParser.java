@@ -115,6 +115,10 @@ public class TableRowParser {
         if (StringUtils.isBlank(finishTimeString)) {
             return null;
         }
+        else if (finishTimeString.equalsIgnoreCase("finished")) {
+            finishTimeString = tableRow.getElementsByTag("td").get(10).text().trim();
+            return LocalDateTime.parse(finishTimeString.substring(0, finishTimeString.length() - 6), TIMESTAMP_PARSER);
+        }
         else {
             return LocalDateTime.parse(finishTimeString.substring(0, finishTimeString.length() - 6), TIMESTAMP_PARSER);
         }
@@ -124,7 +128,14 @@ public class TableRowParser {
         return tableRow.hasClass("stealthrow");
     }
 
-    private Double parseNauticalMiles(String nauticalMiles) {
-        return Double.valueOf(nauticalMiles.substring(0, nauticalMiles.length() - 2));
+    private Double parseNauticalMiles(String nauticalMilesString) {
+        final Double nauticalMiles;
+        if (nauticalMilesString.length() == 0) {
+            nauticalMiles = (double) 0;
+        }
+        else {
+            nauticalMiles = Double.valueOf(nauticalMilesString.substring(0, nauticalMilesString.length() - 2));
+        }
+        return nauticalMiles;
     }
 }

@@ -59,7 +59,6 @@ class RaceStandingsDataParserTest {
 
         assertThat(underTest.parse(raceStandingsPage), is(asList(raceStandingsData1, raceStandingsData2, raceStandingsData3)));
 
-
     }
 
 }
