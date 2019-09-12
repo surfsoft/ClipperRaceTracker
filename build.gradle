@@ -16,6 +16,7 @@
 
 plugins {
     id 'org.springframework.boot' version '2.1.6.RELEASE'
+    id 'org.owasp.dependencycheck' version '3.3.0'
 }
 
 apply plugin: 'java'
@@ -28,9 +29,6 @@ description = """racetracker"""
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
-}
 
 def springBootVersion = "2.1.6.RELEASE"
 def commonsLang3Version = "3.6"
@@ -76,4 +74,8 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+dependencyCheck {
+    suppressionFile = 'gradle/dependency-check-suppression.xml'
 }
